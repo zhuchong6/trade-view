@@ -20,6 +20,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       });
     return true; // 保持消息通道开启，异步发送响应
   }
+
+  if (message.action === 'fetchMarketIndex') {
+    fetchMarketIndexData(message.indexType)
+      .then((data) => {
+        sendResponse(data);
+      })
+      .catch((err) => {
+        console.error('获取指数数据失败:', err);
+        sendResponse(null);
+      });
+    return true;
+  }
 });
 
 // 获取基金数据
@@ -185,3 +197,44 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     // 页面加载完成后的逻辑
   }
 });
+
+// ==================== 市场指数数据获取 ====================
+
+// 通用：通过东方财富 push2 接口获取指数行情
+// secid: 1.000001=上证, 100.NDX=纳斯达克, 100.DJI=道琼斯, 100.SPX=标普500
+async function fetchIndexFromEastMoney(secid) {
+  const url = `https://push2.eastmoney.com/api/qt/stock/get?secid=${secid}&fields=f43,f170&ut=fa5fd1943c7b386f172d6893dbbd1d0c`;
+
+  const response = await fetch(url);
+  if (!response.ok) return null;
+
+  const data = await response.json();
+  if (!data?.data) return null;
+
+  const d = data.data;
+  // f43=最新价, f170=涨跌幅%
+  const price = d.f43;
+  const changePercent = d.f170;
+
+  if (price != null && changePercent != null) {
+    return { value: price.toFixed(2), change: (changePercent / 100).toFixed(2) };
+  }
+  return null;
+}
+
+// 获取市场指数数据
+async function fetchMarketIndexData(indexType) {
+  try {
+    if (indexType === 'sh') {
+      // 上证指数 secid: 1.000001
+      return await fetchIndexFromEastMoney('1.000001');
+    } else if (indexType === 'nasdaq') {
+      // 纳斯达克 secid: 100.NDX
+      return await fetchIndexFromEastMoney('100.NDX');
+    }
+    return null;
+  } catch (err) {
+    console.error(`[MarketIndex] 指数 ${indexType} 异常:`, err.message);
+    return null;
+  }
+}

@@ -425,3 +425,62 @@ document.getElementById('openSettings').addEventListener('click', (e) => {
 
 // 初始化：每次打开popup刷新数据
 refreshAll();
+fetchMarketIndices();
+
+// ==================== 市场指数功能 ====================
+
+// 获取市场指数数据（通过 background script）
+async function fetchMarketIndex(indexType) {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage(
+      { action: 'fetchMarketIndex', indexType },
+      (response) => {
+        if (chrome.runtime.lastError) {
+          resolve(null);
+          return;
+        }
+        resolve(response);
+      }
+    );
+  });
+}
+
+// 更新单个指数显示
+function updateIndexDisplay(elementId, data) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+
+  const valueEl = el.querySelector('.index-value');
+  const changeEl = el.querySelector('.index-change');
+
+  if (!data || !data.value) {
+    valueEl.textContent = '--';
+    changeEl.textContent = '--';
+    changeEl.className = 'index-change flat';
+    return;
+  }
+
+  valueEl.textContent = data.value;
+
+  if (data.change !== null && data.change !== undefined) {
+    const prefix = parseFloat(data.change) > 0 ? '+' : '';
+    changeEl.textContent = prefix + data.change + '%';
+    
+    // 移除旧样式，添加新样式
+    changeEl.className = 'index-change ' + (parseFloat(data.change) > 0 ? 'up' : parseFloat(data.change) < 0 ? 'down' : 'flat');
+  } else {
+    changeEl.textContent = '--';
+    changeEl.className = 'index-change flat';
+  }
+}
+
+// 获取所有市场指数
+async function fetchMarketIndices() {
+  const [shData, nasdaqData] = await Promise.all([
+    fetchMarketIndex('sh'),
+    fetchMarketIndex('nasdaq')
+  ]);
+
+  updateIndexDisplay('shIndex', shData);
+  updateIndexDisplay('nasdaqIndex', nasdaqData);
+}
