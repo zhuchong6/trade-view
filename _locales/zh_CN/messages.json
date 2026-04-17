@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "Trade View",
+    "description": "插件名称"
+  },
+  "appDescription": {
+    "message": "Trade View - 交易视图浏览器插件",
+    "description": "插件描述"
+  }
+}

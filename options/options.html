@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trade View - 设置</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <h1 class="page-title">Trade View 设置</h1>
+    <form id="settingsForm">
+      <div class="form-section">
+        <h2 class="section-title">通用设置</h2>
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="enabled">
+            启用插件
+          </label>
+        </div>
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="notifications">
+            启用通知
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="theme">主题</label>
+          <select id="theme">
+            <option value="light">浅色</option>
+            <option value="dark">深色</option>
+            <option value="auto">跟随系统</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2 class="section-title">收益颜色设置</h2>
+        <p class="section-desc">自定义基金卡片盈利和亏损时显示的颜色，默认为中国市场风格（红涨绿跌）</p>
+
+        <div class="color-group">
+          <h3 class="color-group-title">盈利颜色</h3>
+          <div class="form-group color-item">
+            <label for="profitBg">卡片背景色</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="profitBg" value="#fff1f0">
+              <input type="text" id="profitBgText" class="color-text" value="#fff1f0" maxlength="7">
+            </div>
+          </div>
+          <div class="form-group color-item">
+            <label for="profitBorder">卡片边框色</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="profitBorder" value="#ffa39e">
+              <input type="text" id="profitBorderText" class="color-text" value="#ffa39e" maxlength="7">
+            </div>
+          </div>
+          <div class="form-group color-item">
+            <label for="profitText">文字颜色</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="profitText" value="#cf1322">
+              <input type="text" id="profitTextText" class="color-text" value="#cf1322" maxlength="7">
+            </div>
+          </div>
+        </div>
+
+        <div class="color-group">
+          <h3 class="color-group-title">亏损颜色</h3>
+          <div class="form-group color-item">
+            <label for="lossBg">卡片背景色</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="lossBg" value="#f6ffed">
+              <input type="text" id="lossBgText" class="color-text" value="#f6ffed" maxlength="7">
+            </div>
+          </div>
+          <div class="form-group color-item">
+            <label for="lossBorder">卡片边框色</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="lossBorder" value="#b7eb8f">
+              <input type="text" id="lossBorderText" class="color-text" value="#b7eb8f" maxlength="7">
+            </div>
+          </div>
+          <div class="form-group color-item">
+            <label for="lossText">文字颜色</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="lossText" value="#389e0d">
+              <input type="text" id="lossTextText" class="color-text" value="#389e0d" maxlength="7">
+            </div>
+          </div>
+        </div>
+
+        <div class="color-preview">
+          <h3 class="color-group-title">效果预览</h3>
+          <div class="preview-cards">
+            <div class="preview-card" id="previewProfit">
+              <div class="preview-label">盈利</div>
+              <div class="preview-value">+128.50 (+5.26%)</div>
+            </div>
+            <div class="preview-card" id="previewLoss">
+              <div class="preview-label">亏损</div>
+              <div class="preview-value">-86.30 (-3.42%)</div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-reset" id="resetColors">恢复默认颜色</button>
+      </div>
+
+      <button type="submit" class="btn btn-primary">保存设置</button>
+    </form>
+    <div id="status" class="status"></div>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>

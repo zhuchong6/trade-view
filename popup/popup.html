@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trade View</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <img src="../icons/icon48.png" alt="Logo" class="logo">
+      <h1 class="title">基金看板</h1>
+    </header>
+    <main class="main">
+      <div class="input-group">
+        <input type="text" id="fundInput" class="input" placeholder="输入基金代码，如 000001" maxlength="6">
+        <button id="addBtn" class="btn btn-add">添加</button>
+      </div>
+      <div id="fundList" class="fund-list">
+        <!-- 基金卡片动态生成 -->
+      </div>
+      <div id="emptyTip" class="empty-tip">暂无基金，请添加</div>
+      <div id="loading" class="loading" style="display:none;">
+        <div class="spinner"></div>
+        <span>加载中...</span>
+      </div>
+    </main>
+    <footer class="footer">
+      <a href="#" id="openSettings" class="settings-link">设置</a>
+      <span class="version">v1.0.0</span>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

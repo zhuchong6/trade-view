@@ -1,0 +1,494 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 380px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f0f2f5;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  max-height: 600px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+
+.logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+}
+
+.title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.input-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  background: #fff;
+}
+
+.input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.15);
+}
+
+.input::placeholder {
+  color: #bfbfbf;
+}
+
+.btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+.btn-add {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  white-space: nowrap;
+}
+
+.btn-add:hover {
+  opacity: 0.9;
+}
+
+.fund-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fund-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  border: 1px solid transparent;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.fund-card.profit {
+  background: #fff1f0;
+  border-color: #ffa39e;
+}
+
+.fund-card.loss {
+  background: #f6ffed;
+  border-color: #b7eb8f;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fund-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.fund-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 220px;
+}
+
+.fund-code {
+  font-size: 12px;
+  color: #8c8c8c;
+  background: #f5f5f5;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.fund-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #bfbfbf;
+  font-size: 18px;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+
+.fund-delete:hover {
+  color: #ff4d4f;
+}
+
+.fund-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.fund-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fund-info-label {
+  font-size: 11px;
+  color: #8c8c8c;
+}
+
+.fund-info-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.fund-info-value.up {
+  color: #cf1322;
+}
+
+.fund-info-value.down {
+  color: #3f8600;
+}
+
+.fund-info-value.flat {
+  color: #333;
+}
+
+/* 无实时估值提示 */
+.no-estimate-tip {
+  font-size: 10px;
+  color: #bfbfbf;
+  margin-left: 2px;
+  cursor: help;
+}
+
+/* 持仓区域 */
+.fund-holding {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #e8e8e8;
+}
+
+.fund-holding-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.holding-tag {
+  font-size: 11px;
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.holding-edit {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #8c8c8c;
+  font-size: 14px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color 0.2s;
+}
+
+.holding-edit:hover {
+  color: #667eea;
+}
+
+.fund-holding-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.profit-highlight .fund-info-value {
+  font-size: 15px;
+}
+
+.fund-holding-empty {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #e8e8e8;
+  text-align: center;
+}
+
+.btn-add-holding {
+  background: none;
+  border: 1px dashed #bfbfbf;
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-size: 13px;
+  color: #8c8c8c;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-add-holding:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.fund-update-time {
+  margin-top: 8px;
+  font-size: 11px;
+  color: #bfbfbf;
+  text-align: right;
+}
+
+.empty-tip {
+  text-align: center;
+  color: #bfbfbf;
+  font-size: 14px;
+  padding: 40px 0;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  color: #8c8c8c;
+  font-size: 13px;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #d9d9d9;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.footer {
+  padding: 6px 16px;
+  text-align: center;
+  border-top: 1px solid #e8e8e8;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.settings-link {
+  font-size: 12px;
+  color: #8c8c8c;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.settings-link:hover {
+  color: #667eea;
+}
+
+.version {
+  font-size: 11px;
+  color: #bfbfbf;
+}
+
+/* 弹窗样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.15s ease;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 12px;
+  width: 320px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  animation: modalSlideIn 0.2s ease;
+}
+
+@keyframes modalSlideIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+}
+
+.modal-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #8c8c8c;
+  font-size: 20px;
+  line-height: 1;
+  padding: 2px;
+  border-radius: 4px;
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
+  color: #333;
+}
+
+.modal-body {
+  padding: 8px 20px 16px;
+}
+
+.modal-form-group {
+  margin-bottom: 12px;
+}
+
+.modal-form-group label {
+  display: block;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.modal-form-group input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.modal-form-group input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.15);
+}
+
+.modal-form-group input::placeholder {
+  color: #bfbfbf;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 20px 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.btn-modal-cancel {
+  background: #f5f5f5;
+  color: #666;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-modal-cancel:hover {
+  background: #e8e8e8;
+}
+
+.btn-modal-delete {
+  background: #fff1f0;
+  color: #cf1322;
+  padding: 8px 16px;
+  border: 1px solid #ffa39e;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-modal-delete:hover {
+  background: #ffccc7;
+}
+
+.btn-modal-save {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-modal-save:hover {
+  opacity: 0.9;
+}
