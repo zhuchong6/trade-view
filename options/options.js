@@ -8,6 +8,18 @@ const DEFAULT_COLORS = {
   lossText: '#389e0d',
 };
 
+// ========== 主题管理 ==========
+function applyTheme(theme) {
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else if (theme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+  } else {
+    // auto: 移除属性，让 CSS 媒体查询自动处理
+    document.documentElement.removeAttribute('data-theme');
+  }
+}
+
 // 默认策略配置
 const DEFAULT_STRATEGY = {
   enabled: true,
@@ -31,7 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
   chrome.storage.sync.get(['enabled', 'settings'], (result) => {
     document.getElementById('enabled').checked = result.enabled !== false;
     document.getElementById('notifications').checked = result.settings?.notifications !== false;
-    document.getElementById('theme').value = result.settings?.theme || 'auto';
+    
+    const theme = result.settings?.theme || 'auto';
+    document.getElementById('theme').value = theme;
+    applyTheme(theme);  // 应用主题
 
     // 加载颜色设置
     const colors = result.settings?.colors || DEFAULT_COLORS;
@@ -57,6 +72,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // 策略开关联动
 document.getElementById('strategyEnabled').addEventListener('change', (e) => {
   toggleStrategyConfigArea(e.target.checked);
+});
+
+// 主题选择器 - 实时预览
+document.getElementById('theme').addEventListener('change', (e) => {
+  applyTheme(e.target.value);
 });
 
 function toggleStrategyConfigArea(enabled) {

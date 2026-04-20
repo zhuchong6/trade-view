@@ -335,3 +335,189 @@ select:focus {
   color: #ccc;
   margin-top: 4px;
 }
+
+/* ========== 夜间模式（自动跟随系统 + 手动切换）========== */
+@media (prefers-color-scheme: dark),
+[data-theme="dark"] {
+  body {
+    background: #121212;
+    color: #e8e8e8;
+  }
+
+  .container {
+    background: #1e1e1e;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .page-title {
+    color: #e8e8e8;
+  }
+
+  .form-section {
+    border-bottom-color: #333;
+  }
+
+  .section-title {
+    color: #e8e8e8;
+  }
+
+  .section-desc {
+    color: #888;
+  }
+
+  .form-group label {
+    color: #aaa;
+  }
+
+  .checkbox-label {
+    color: #e0e0e0 !important;
+  }
+
+  select {
+    background: #2a2a2a;
+    border-color: #404040;
+    color: #e8e8e8;
+  }
+
+  select:focus {
+    border-color: #666;
+  }
+
+  /* 颜色设置 */
+  .color-group {
+    background: #252525;
+    border-color: #333;
+  }
+
+  .color-group-title {
+    color: #ccc;
+  }
+
+  .color-item label {
+    color: #999;
+  }
+
+  .color-input-wrapper input[type="color"] {
+    background: #333;
+    border-color: #444;
+  }
+
+  .color-text {
+    background: #2a2a2a;
+    border-color: #404040;
+    color: #e8e8e8;
+  }
+
+  .color-text:focus {
+    border-color: #666;
+  }
+
+  .preview-label {
+    color: #888;
+  }
+
+  /* 按钮 */
+  .btn-primary {
+    background: #e8e8e8;
+    color: #1a1a1a;
+  }
+
+  .btn-primary:hover {
+    background: #ccc;
+  }
+
+  .btn-reset {
+    color: #888;
+    border-color: #404040;
+  }
+
+  .btn-reset:hover {
+    background: #2a2a2a;
+    color: #aaa;
+    border-color: #555;
+  }
+
+  .status.success {
+    background: #1a3d24;
+    color: #4ade80;
+    border-color: #245c32;
+  }
+
+  /* 策略配置 */
+  .strategy-rule {
+    background: #252525;
+    border-color: #333;
+  }
+
+  .rule-title {
+    color: #e8e8e8;
+  }
+
+  .rule-desc {
+    color: #777;
+  }
+
+  .strategy-rule .form-group label {
+    color: #999;
+  }
+
+  .strategy-rule .form-group input {
+    background: #2a2a2a;
+    border-color: #404040;
+    color: #e8e8e8;
+  }
+
+  .strategy-rule .form-group input:focus {
+    border-color: #666;
+  }
+
+  .input-hint {
+    color: #555;
+  }
+}
+
+/* 强制浅色模式（用户手动选择浅色，覆盖系统深色） */
+[data-theme="light"] {
+  body { background: #fafafa; color: #1a1a1a; }
+
+  .container {
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  }
+  .page-title { color: #1a1a1a; }
+  .form-section { border-bottom-color: #f5f5f5; }
+  .section-title { color: #1a1a1a; }
+  .section-desc { color: #999; }
+  .form-group label { color: #555; }
+  .checkbox-label { color: #333 !important; }
+
+  select {
+    background: #fff;
+    border-color: #e0e0e0;
+    color: #1a1a1a;
+  }
+  select:focus { border-color: #1a1a1a; }
+
+  .color-group { background: #fafafa; border-color: #f0f0f0; }
+  .color-group-title { color: #444; }
+  .color-item label { color: #777; }
+  .color-input-wrapper input[type="color"] { background: #fff; border-color: #e0e0e0; }
+  .color-text { background: #fff; border-color: #e0e0e0; color: #1a1a1a; }
+  .color-text:focus { border-color: #1a1a1a; }
+  .preview-label { color: #888; }
+
+  .btn-primary { background: #1a1a1a; color: #fff; }
+  .btn-primary:hover { background: #333; }
+  .btn-reset { color: #999; border-color: #e0e0e0; }
+  .btn-reset:hover { background: #f5f5f5; color: #666; }
+
+  .status.success { background: #f0fdf4; color: #22c55e; border-color: #bbf7d0; }
+
+  .strategy-rule { background: #fafafa; border-color: #f0f0f0; }
+  .rule-title { color: #1a1a1a; }
+  .rule-desc { color: #aaa; }
+  .strategy-rule .form-group label { color: #666; }
+  .strategy-rule .form-group input { background: #fff; border-color: #e0e0e0; color: #1a1a1a; }
+  .strategy-rule .form-group input:focus { border-color: #1a1a1a; }
+  .input-hint { color: #ccc; }
+}

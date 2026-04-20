@@ -9,6 +9,33 @@ const STORAGE_KEY = 'fund_list';
 const HOLDINGS_KEY = 'fund_holdings';
 const SETTINGS_KEY = 'fund_settings';
 
+// ========== 主题管理 ==========
+function applyTheme(theme) {
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else if (theme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+  } else {
+    // auto: 移除属性，让 CSS 媒体查询自动处理
+    document.documentElement.removeAttribute('data-theme');
+  }
+}
+
+async function initTheme() {
+  const result = await new Promise((resolve) => {
+    chrome.storage.sync.get(['settings'], resolve);
+  });
+  const theme = result.settings?.theme || 'auto';
+  applyTheme(theme);
+}
+
+// 监听设置变化（当在 options 页面修改时实时更新）
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === 'sync' && changes.settings?.newValue?.theme) {
+    applyTheme(changes.settings.newValue.theme);
+  }
+});
+
 // 默认颜色配置（中国市场风格：红涨绿跌）
 const DEFAULT_COLORS = {
   profit: '#fff1f0',    // 盈利卡片背景
@@ -465,6 +492,7 @@ document.getElementById('openSettings').addEventListener('click', (e) => {
 });
 
 // 初始化：每次打开popup刷新数据
+initTheme();
 refreshAll();
 fetchMarketIndices();
 
