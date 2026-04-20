@@ -553,3 +553,46 @@ body {
 .btn-modal-save:hover {
   opacity: 0.9;
 }
+
+/* 策略建议 */
+.strategy-advice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  animation: fadeIn 0.3s ease;
+}
+
+.strategy-advice.advice-buy {
+  background: rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+.strategy-advice.advice-hold {
+  background: rgba(250, 173, 20, 0.08);
+  border: 1px solid rgba(250, 173, 20, 0.25);
+}
+
+.strategy-advice.advice-rebuild {
+  background: rgba(240, 100, 80, 0.08);
+  border: 1px solid rgba(240, 100, 80, 0.25);
+}
+
+.advice-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.advice-text {
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+}
+
+.advice-detail {
+  color: #8c8c8c;
+  font-size: 11px;
+}

@@ -28,6 +28,53 @@ async function getColorSettings() {
   });
 }
 
+// 获取策略配置
+async function getStrategySettings() {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get([SETTINGS_KEY], (result) => {
+      resolve(result[SETTINGS_KEY]?.strategy || {
+        enabled: true,
+        lossBuyAmount: 40,
+        holdThreshold: 10,
+        rebuildThreshold: 10,
+      });
+    });
+  });
+}
+
+// 计算策略建议
+function calculateStrategyAdvice(profitRate, strategy) {
+  if (!strategy.enabled || profitRate === null) return null;
+
+  const rate = parseFloat(profitRate);
+
+  if (rate < 0) {
+    // 浮亏 → 建议买
+    return {
+      type: 'buy',
+      text: `建议买入 ¥${strategy.lossBuyAmount}`,
+      detail: `浮亏 ${rate.toFixed(2)}%，逢低补仓`,
+      actionClass: 'advice-buy',
+    };
+  } else if (rate < strategy.holdThreshold) {
+    // 盈利 < 阈值 → 不买
+    return {
+      type: 'hold',
+      text: '建议持有',
+      detail: `盈利 ${rate.toFixed(2)}%，未达止盈线`,
+      actionClass: 'advice-hold',
+    };
+  } else {
+    // 盈利 >= 阈值 → 重新建仓
+    return {
+      type: 'rebuild',
+      text: '建议重新建仓',
+      detail: `盈利 ${rate.toFixed(2)}%，考虑止盈重置成本`,
+      actionClass: 'advice-rebuild',
+    };
+  }
+}
+
 // 获取存储的基金代码列表
 async function getFundCodes() {
   return new Promise((resolve) => {
@@ -149,6 +196,7 @@ function calculateProfit(fund, holding, colors) {
 async function renderFundCards(funds) {
   const holdings = await getHoldings();
   const colors = await getColorSettings();
+  const strategy = await getStrategySettings();
 
   fundList.innerHTML = '';
   if (funds.length === 0) {
@@ -222,6 +270,17 @@ async function renderFundCards(funds) {
           </div>
         </div>
       `;
+
+      // 策略建议
+      const advice = calculateStrategyAdvice(profit.totalProfitRate, strategy);
+      if (advice) {
+        holdingHTML += `
+        <div class="strategy-advice ${advice.actionClass}">
+          <span class="advice-icon">${advice.type === 'buy' ? '📈' : advice.type === 'hold' ? '⏸️' : '🔄'}</span>
+          <span class="advice-text">${advice.text}</span>
+          <span class="advice-detail">${advice.detail}</span>
+        </div>`;
+      }
     } else {
       holdingHTML = `
         <div class="fund-holding-empty">
@@ -280,7 +339,7 @@ function showHoldingModal(code, existingHolding) {
       </div>
       <div class="modal-body">
         <div class="modal-form-group">
-          <label for="buyNavInput">买入净值</label>
+          <label for="buyNavInput">持有成本</label>
           <input type="number" id="buyNavInput" step="0.0001" min="0" placeholder="如 1.5000" value="${existingHolding?.buyNav || ''}">
         </div>
         <div class="modal-form-group">

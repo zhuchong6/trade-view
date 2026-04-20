@@ -8,6 +8,14 @@ const DEFAULT_COLORS = {
   lossText: '#389e0d',
 };
 
+// 默认策略配置
+const DEFAULT_STRATEGY = {
+  enabled: true,
+  lossBuyAmount: 40,     // 浮亏时建议买入金额
+  holdThreshold: 10,      // 小盈利持有阈值(%)
+  rebuildThreshold: 10,   // 高盈利重新建仓阈值(%)
+};
+
 // 颜色字段映射
 const COLOR_FIELDS = [
   { id: 'profitBg', key: 'profit', textId: 'profitBgText' },
@@ -33,8 +41,27 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById(field.textId).value = value;
     });
     updatePreview(colors);
+
+    // 加载策略配置
+    const strategy = result.settings?.strategy || DEFAULT_STRATEGY;
+    document.getElementById('strategyEnabled').checked = strategy.enabled !== false;
+    document.getElementById('lossBuyAmount').value = strategy.lossBuyAmount ?? DEFAULT_STRATEGY.lossBuyAmount;
+    document.getElementById('holdThreshold').value = strategy.holdThreshold ?? DEFAULT_STRATEGY.holdThreshold;
+    document.getElementById('rebuildThreshold').value = strategy.rebuildThreshold ?? DEFAULT_STRATEGY.rebuildThreshold;
+
+    // 策略开关控制区域显隐
+    toggleStrategyConfigArea(strategy.enabled !== false);
   });
 });
+
+// 策略开关联动
+document.getElementById('strategyEnabled').addEventListener('change', (e) => {
+  toggleStrategyConfigArea(e.target.checked);
+});
+
+function toggleStrategyConfigArea(enabled) {
+  document.getElementById('strategyConfigArea').style.display = enabled ? '' : 'none';
+}
 
 // 颜色选择器与文本输入同步
 COLOR_FIELDS.forEach((field) => {
@@ -107,6 +134,12 @@ document.getElementById('settingsForm').addEventListener('submit', (e) => {
   const theme = document.getElementById('theme').value;
   const colors = getColorsFromInputs();
 
+  // 获取策略配置
+  const strategyEnabled = document.getElementById('strategyEnabled').checked;
+  const lossBuyAmount = parseFloat(document.getElementById('lossBuyAmount').value) || DEFAULT_STRATEGY.lossBuyAmount;
+  const holdThreshold = parseFloat(document.getElementById('holdThreshold').value) || DEFAULT_STRATEGY.holdThreshold;
+  const rebuildThreshold = parseFloat(document.getElementById('rebuildThreshold').value) || DEFAULT_STRATEGY.rebuildThreshold;
+
   chrome.storage.sync.set(
     {
       enabled,
@@ -114,6 +147,12 @@ document.getElementById('settingsForm').addEventListener('submit', (e) => {
         notifications,
         theme,
         colors,
+        strategy: {
+          enabled: strategyEnabled,
+          lossBuyAmount,
+          holdThreshold,
+          rebuildThreshold,
+        },
       },
     },
     () => {
