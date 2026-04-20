@@ -230,56 +230,38 @@ async function renderFundCards(funds) {
     const hasNoEstimate = fund.hasRealTimeEstimate === false;
     const noEstimateTip = hasNoEstimate ? '<span class="no-estimate-tip" title="该基金不支持实时估值">(不支持)</span>' : '';
 
-    // 持仓信息区域
+    // 持仓信息区域 - 紧凑一行式
     let holdingHTML = '';
     if (profit) {
       const profitTextColor = profit.isProfit ? colors.profitText : colors.lossText;
-      holdingHTML = `
-        <div class="fund-holding" style="--profit-color: ${profitTextColor}">
-          <div class="fund-holding-header">
-            <span class="holding-tag">持仓</span>
-            <button class="holding-edit" data-code="${fund.code}" title="编辑持仓">✎</button>
-          </div>
-          <div class="fund-holding-info">
-            <div class="fund-info-item">
-              <span class="fund-info-label">买入净值</span>
-              <span class="fund-info-value">${profit.buyNav}</span>
-            </div>
-            <div class="fund-info-item">
-              <span class="fund-info-label">持有份额</span>
-              <span class="fund-info-value">${profit.shares}</span>
-            </div>
-            <div class="fund-info-item">
-              <span class="fund-info-label">持仓成本</span>
-              <span class="fund-info-value">${profit.costValue}</span>
-            </div>
-            <div class="fund-info-item">
-              <span class="fund-info-label">持仓市值</span>
-              <span class="fund-info-value">${profit.currentValue}</span>
-            </div>
-            <div class="fund-info-item profit-highlight">
-              <span class="fund-info-label">历史收益</span>
-              <span class="fund-info-value" style="color: ${profitTextColor}">${profit.isProfit ? '+' : ''}${profit.totalProfit} (${profit.isProfit ? '+' : ''}${profit.totalProfitRate}%)</span>
-            </div>
-            ${profit.todayProfit !== null ? `
-            <div class="fund-info-item profit-highlight">
-              <span class="fund-info-label">今日预估</span>
-              <span class="fund-info-value" style="color: ${profitTextColor}">${parseFloat(profit.todayProfit) >= 0 ? '+' : ''}${profit.todayProfit}</span>
-            </div>
-            ` : ''}
-          </div>
-        </div>
-      `;
+      const todayProfitStr = profit.todayProfit !== null
+        ? '<div class="holding-today">今日预估 ' + (parseFloat(profit.todayProfit) >= 0 ? '+' : '') + profit.todayProfit + '</div>'
+        : '';
+      const profitSign = profit.isProfit ? '+' : '';
+
+      holdingHTML = ''
+        + '<div class="fund-holding-compact" style="--profit-color: ' + profitTextColor + '">'
+        +   '<button class="holding-edit" data-code="' + fund.code + '" title="编辑持仓">✎</button>'
+        +   '<div class="holding-row">'
+        +     '<span class="holding-label">成本 ' + profit.costValue + '</span>'
+        +     '<span class="holding-divider">|</span>'
+        +     '<span class="holding-label">市值 ' + profit.currentValue + '</span>'
+        +     '<span class="holding-divider">|</span>'
+        +     '<span class="holding-profit">收益 <strong>' + profitSign + profit.totalProfit + '</strong> (' + profitSign + profit.totalProfitRate + '%)</span>'
+        +   '</div>'
+        +   todayProfitStr
+        + '</div>';
 
       // 策略建议
       const advice = calculateStrategyAdvice(profit.totalProfitRate, strategy);
       if (advice) {
-        holdingHTML += `
-        <div class="strategy-advice ${advice.actionClass}">
-          <span class="advice-icon">${advice.type === 'buy' ? '📈' : advice.type === 'hold' ? '⏸️' : '🔄'}</span>
-          <span class="advice-text">${advice.text}</span>
-          <span class="advice-detail">${advice.detail}</span>
-        </div>`;
+        var iconMap = { buy: '[+]', hold: '[-]', rebuild: '[r]' };
+        holdingHTML += ''
+          + '<div class="strategy-advice ' + advice.actionClass + '">'
+          +   '<span class="advice-icon">' + (iconMap[advice.type] || '') + '</span>'
+          +   '<span class="advice-text">' + advice.text + '</span>'
+          +   '<span class="advice-detail">' + advice.detail + '</span>'
+          + '</div>';
       }
     } else {
       holdingHTML = `
