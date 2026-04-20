@@ -5,97 +5,99 @@
 }
 
 body {
-  width: 380px;
+  width: 360px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #f0f2f5;
+  background: #fafafa;
+  color: #1a1a1a;
 }
 
-/* 市场指数栏 */
+/* 市场指数栏 - 极简 */
 .market-index-bar {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 5px 12px;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  color: #fff;
+  gap: 16px;
+  padding: 10px 16px;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .index-item {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 7px;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.08);
+  gap: 6px;
 }
 
 .index-name {
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.65);
+  font-size: 11px;
+  color: #999;
   white-space: nowrap;
 }
 
 .index-value {
-  font-size: 13px;
-  font-weight: 700;
-  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
   min-width: 56px;
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
 .index-change {
-  font-size: 11px;
-  font-weight: 600;
-  min-width: 46px;
+  font-size: 12px;
+  font-weight: 500;
+  min-width: 48px;
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
 .index-change.up {
-  color: #cf1322;
+  color: #e53935;
 }
 
 .index-change.down {
-  color: #3f8600;
+  color: #43a047;
 }
 
 .index-change.flat {
-  color: rgba(255, 255, 255, 0.5);
+  color: #bbb;
 }
 
 .index-divider {
   width: 1px;
-  height: 20px;
-  background: rgba(255, 255, 255, 0.15);
+  height: 18px;
+  background: #eee;
 }
 
+/* 主容器 */
 .container {
   display: flex;
   flex-direction: column;
-  max-height: 600px;
+  max-height: 560px;
 }
 
+/* 头部 - 极简白底 */
 .header {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
+  padding: 16px 20px;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .logo {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: 6px;
+  opacity: 0.85;
 }
 
 .title {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 600;
-  color: #fff;
+  color: #1a1a1a;
+  letter-spacing: -0.2px;
 }
 
 .main {
@@ -103,88 +105,83 @@ body {
   flex-direction: column;
   flex: 1;
   overflow-y: auto;
-  padding: 12px;
+  padding: 14px 16px;
 }
 
+/* 输入区 */
 .input-group {
   display: flex;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .input {
   flex: 1;
-  padding: 10px 14px;
-  border: 1px solid #d9d9d9;
+  padding: 9px 12px;
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 13px;
   outline: none;
   transition: border-color 0.2s;
   background: #fff;
+  color: #1a1a1a;
 }
 
 .input:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.15);
+  border-color: #1a1a1a;
 }
 
 .input::placeholder {
-  color: #bfbfbf;
+  color: #c0c0c0;
 }
 
 .btn {
-  padding: 10px 16px;
+  padding: 9px 14px;
   border: none;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s ease;
 }
 
 .btn:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
 .btn-add {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #1a1a1a;
   color: #fff;
   white-space: nowrap;
 }
 
 .btn-add:hover {
-  opacity: 0.9;
+  background: #333;
 }
 
+/* 基金列表 */
 .fund-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .fund-card {
   background: #fff;
   border-radius: 10px;
-  padding: 14px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-  border: 1px solid transparent;
+  padding: 14px 16px;
+  border: 1px solid #f0f0f0;
   position: relative;
-  animation: fadeIn 0.3s ease;
-  transition: background-color 0.3s, border-color 0.3s;
+  animation: fadeIn 0.25s ease;
+  transition: border-color 0.2s, background-color 0.2s;
 }
 
-.fund-card.profit {
-  background: #fff1f0;
-  border-color: #ffa39e;
-}
-
-.fund-card.loss {
-  background: #f6ffed;
-  border-color: #b7eb8f;
+.fund-card:hover {
+  border-color: #e0e0e0;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -196,46 +193,48 @@ body {
 }
 
 .fund-name {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: #1a1a1a;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 220px;
+  max-width: 200px;
 }
 
 .fund-code {
-  font-size: 12px;
-  color: #8c8c8c;
+  font-size: 11px;
+  color: #999;
   background: #f5f5f5;
-  padding: 2px 8px;
+  padding: 2px 7px;
   border-radius: 4px;
   margin-left: 8px;
   flex-shrink: 0;
+  letter-spacing: 0.3px;
 }
 
 .fund-delete {
   background: none;
   border: none;
   cursor: pointer;
-  color: #bfbfbf;
-  font-size: 18px;
+  color: #d0d0d0;
+  font-size: 16px;
   line-height: 1;
-  padding: 2px 4px;
+  padding: 3px 5px;
   border-radius: 4px;
-  transition: color 0.2s;
+  transition: color 0.15s;
   flex-shrink: 0;
 }
 
 .fund-delete:hover {
-  color: #ff4d4f;
+  color: #e53935;
 }
 
+/* 信息网格 */
 .fund-info {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 10px 16px;
 }
 
 .fund-info-item {
@@ -246,32 +245,34 @@ body {
 
 .fund-info-label {
   font-size: 11px;
-  color: #8c8c8c;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .fund-info-value {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
-  color: #333;
+  color: #1a1a1a;
+  font-variant-numeric: tabular-nums;
 }
 
 .fund-info-value.up {
-  color: #cf1322;
+  color: #e53935;
 }
 
 .fund-info-value.down {
-  color: #3f8600;
+  color: #43a047;
 }
 
 .fund-info-value.flat {
-  color: #333;
+  color: #1a1a1a;
 }
 
-/* 无实时估值提示 */
 .no-estimate-tip {
   font-size: 10px;
-  color: #bfbfbf;
-  margin-left: 2px;
+  color: #ccc;
+  margin-left: 3px;
   cursor: help;
 }
 
@@ -279,7 +280,7 @@ body {
 .fund-holding {
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px dashed #e8e8e8;
+  border-top: 1px solid #f5f5f5;
 }
 
 .fund-holding-header {
@@ -291,8 +292,8 @@ body {
 
 .holding-tag {
   font-size: 11px;
-  color: #667eea;
-  background: rgba(102, 126, 234, 0.1);
+  color: #666;
+  background: #f5f5f5;
   padding: 2px 8px;
   border-radius: 4px;
   font-weight: 500;
@@ -302,62 +303,62 @@ body {
   background: none;
   border: none;
   cursor: pointer;
-  color: #8c8c8c;
+  color: #bbb;
   font-size: 14px;
   padding: 2px 4px;
   border-radius: 4px;
-  transition: color 0.2s;
+  transition: color 0.15s;
 }
 
 .holding-edit:hover {
-  color: #667eea;
+  color: #666;
 }
 
 .fund-holding-info {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 10px 16px;
 }
 
 .profit-highlight .fund-info-value {
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .fund-holding-empty {
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px dashed #e8e8e8;
+  border-top: 1px solid #f5f5f5;
   text-align: center;
 }
 
 .btn-add-holding {
   background: none;
-  border: 1px dashed #bfbfbf;
+  border: 1px dashed #ddd;
   border-radius: 6px;
   padding: 6px 16px;
-  font-size: 13px;
-  color: #8c8c8c;
+  font-size: 12px;
+  color: #999;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
 }
 
 .btn-add-holding:hover {
-  border-color: #667eea;
-  color: #667eea;
+  border-color: #999;
+  color: #666;
 }
 
 .fund-update-time {
   margin-top: 8px;
   font-size: 11px;
-  color: #bfbfbf;
+  color: #d0d0d0;
   text-align: right;
 }
 
 .empty-tip {
   text-align: center;
-  color: #bfbfbf;
-  font-size: 14px;
-  padding: 40px 0;
+  color: #ccc;
+  font-size: 13px;
+  padding: 36px 0;
 }
 
 .loading {
@@ -366,15 +367,15 @@ body {
   justify-content: center;
   gap: 8px;
   padding: 20px;
-  color: #8c8c8c;
+  color: #999;
   font-size: 13px;
 }
 
 .spinner {
   width: 16px;
   height: 16px;
-  border: 2px solid #d9d9d9;
-  border-top-color: #667eea;
+  border: 2px solid #eee;
+  border-top-color: #999;
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
@@ -383,57 +384,58 @@ body {
   to { transform: rotate(360deg); }
 }
 
+/* 底部 */
 .footer {
-  padding: 6px 16px;
-  text-align: center;
-  border-top: 1px solid #e8e8e8;
-  background: #fff;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: #fff;
+  border-top: 1px solid #f0f0f0;
 }
 
 .settings-link {
   font-size: 12px;
-  color: #8c8c8c;
+  color: #999;
   text-decoration: none;
-  transition: color 0.2s;
+  transition: color 0.15s;
 }
 
 .settings-link:hover {
-  color: #667eea;
+  color: #555;
 }
 
 .version {
   font-size: 11px;
-  color: #bfbfbf;
+  color: #d0d0d0;
 }
 
-/* 弹窗样式 */
+/* 弹窗 - 极简风格 */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  animation: fadeIn 0.15s ease;
+  animation: fadeIn 0.12s ease;
+  backdrop-filter: blur(2px);
 }
 
 .modal-content {
   background: #fff;
-  border-radius: 12px;
-  width: 320px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  animation: modalSlideIn 0.2s ease;
+  border-radius: 14px;
+  width: 300px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  animation: modalSlideIn 0.18s ease;
 }
 
 @keyframes modalSlideIn {
-  from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+  from { opacity: 0; transform: translateY(-12px) scale(0.97); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
@@ -441,33 +443,33 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px 12px;
+  padding: 16px 18px 12px;
 }
 
 .modal-header h3 {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-  color: #333;
+  color: #1a1a1a;
 }
 
 .modal-close {
   background: none;
   border: none;
   cursor: pointer;
-  color: #8c8c8c;
-  font-size: 20px;
+  color: #c0c0c0;
+  font-size: 18px;
   line-height: 1;
-  padding: 2px;
+  padding: 3px;
   border-radius: 4px;
-  transition: color 0.2s;
+  transition: color 0.15s;
 }
 
 .modal-close:hover {
-  color: #333;
+  color: #555;
 }
 
 .modal-body {
-  padding: 8px 20px 16px;
+  padding: 6px 18px 16px;
 }
 
 .modal-form-group {
@@ -476,109 +478,128 @@ body {
 
 .modal-form-group label {
   display: block;
-  font-size: 13px;
-  color: #666;
-  margin-bottom: 4px;
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 5px;
   font-weight: 500;
 }
 
 .modal-form-group input {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #d9d9d9;
-  border-radius: 6px;
-  font-size: 14px;
+  padding: 9px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 13px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.15s;
+  color: #1a1a1a;
+  background: #fafafa;
 }
 
 .modal-form-group input:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.15);
+  border-color: #1a1a1a;
+  background: #fff;
 }
 
 .modal-form-group input::placeholder {
-  color: #bfbfbf;
+  color: #c0c0c0;
 }
 
 .modal-footer {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  padding: 12px 20px 16px;
-  border-top: 1px solid #f0f0f0;
+  padding: 12px 18px 16px;
+  border-top: 1px solid #f5f5f5;
 }
 
 .btn-modal-cancel {
   background: #f5f5f5;
   color: #666;
-  padding: 8px 16px;
+  padding: 8px 14px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 13px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.15s;
 }
 
 .btn-modal-cancel:hover {
-  background: #e8e8e8;
+  background: #eee;
 }
 
 .btn-modal-delete {
-  background: #fff1f0;
-  color: #cf1322;
-  padding: 8px 16px;
-  border: 1px solid #ffa39e;
-  border-radius: 6px;
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
   font-size: 13px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.15s;
 }
 
 .btn-modal-delete:hover {
-  background: #ffccc7;
+  background: #fee2e2;
 }
 
 .btn-modal-save {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #1a1a1a;
   color: #fff;
-  padding: 8px 20px;
+  padding: 8px 18px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 13px;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: background 0.15s;
 }
 
 .btn-modal-save:hover {
-  opacity: 0.9;
+  background: #333;
 }
 
-/* 策略建议 */
+/* 策略建议 - 极简 */
 .strategy-advice {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   margin-top: 10px;
-  padding: 8px 12px;
-  border-radius: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
   font-size: 12px;
-  animation: fadeIn 0.3s ease;
+  animation: fadeIn 0.25s ease;
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
 }
 
 .strategy-advice.advice-buy {
-  background: rgba(102, 126, 234, 0.1);
-  border: 1px solid rgba(102, 126, 234, 0.3);
+  background: #fafafa;
+  border-color: #e8e8e8;
+}
+
+.strategy-advice.advice-buy .advice-text,
+.strategy-advice.advice-buy .advice-icon {
+  color: #444;
 }
 
 .strategy-advice.advice-hold {
-  background: rgba(250, 173, 20, 0.08);
-  border: 1px solid rgba(250, 173, 20, 0.25);
+  background: #fffbf0;
+  border-color: #f5eed5;
+}
+
+.strategy-advice.advice-hold .advice-text,
+.strategy-advice.advice-hold .advice-icon {
+  color: #996600;
 }
 
 .strategy-advice.advice-rebuild {
-  background: rgba(240, 100, 80, 0.08);
-  border: 1px solid rgba(240, 100, 80, 0.25);
+  background: #fef6f4;
+  border-color: #f5e0da;
+}
+
+.strategy-advice.advice-rebuild .advice-text,
+.strategy-advice.advice-rebuild .advice-icon {
+  color: #c94a30;
 }
 
 .advice-icon {
@@ -588,11 +609,11 @@ body {
 
 .advice-text {
   font-weight: 600;
-  color: #333;
+  color: #1a1a1a;
   white-space: nowrap;
 }
 
 .advice-detail {
-  color: #8c8c8c;
+  color: #888;
   font-size: 11px;
 }
