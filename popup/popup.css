@@ -486,6 +486,7 @@ body {
   gap: 8px;
   flex-wrap: wrap;
   font-size: 12px;
+  padding-right: 28px;
 }
 
 .holding-label {
