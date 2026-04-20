@@ -4,11 +4,189 @@
   box-sizing: border-box;
 }
 
+/* ========== CSS 主题变量 ========== */
+:root {
+  --bg-primary: #fafafa;
+  --bg-secondary: #fff;
+  --bg-card: #fff;
+  --bg-input: #fff;
+  --bg-input-focus: #fff;
+  --bg-modal: #fff;
+  --bg-advice: #fafafa;
+  --bg-advice-buy: #fafafa;
+  --bg-advice-hold: #fffbf0;
+  --bg-advice-rebuild: #fef6f4;
+
+  --text-primary: #1a1a1a;
+  --text-secondary: #999;
+  --text-muted: #aaa;
+  --text-label: #777;
+  --text-hint: #ccc;
+  --text-placeholder: #c0c0c0;
+  --text-delete: #d0d0d0;
+
+  --border-default: #e0e0e0;
+  --border-light: #f0f0f0;
+  --border-lighter: #f5f5f5;
+  --border-divider: #eee;
+  --border-dashed: #ddd;
+  --border-index-divider: #eee;
+
+  --btn-bg: #1a1a1a;
+  --btn-hover: #333;
+  --btn-text: #fff;
+  --btn-cancel-bg: #f5f5f5;
+  --btn-cancel-text: #666;
+  --btn-cancel-hover: #eee;
+  --btn-danger-bg: #fef2f2;
+  --btn-danger-text: #dc2626;
+  --btn-danger-hover: #fee2e2;
+  --btn-dashed-border: #ddd;
+  --btn-dashed-text: #999;
+
+  --modal-overlay: rgba(0, 0, 0, 0.3);
+  --modal-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  --modal-close: #c0c0c0;
+  --modal-close-hover: #555;
+  --modal-input-bg: #fafafa;
+
+  --code-badge-bg: #f5f5f5;
+  --code-badge-text: #999;
+
+  --advice-buy-text: #444;
+  --advice-hold-text: #996600;
+  --advice-rebuild-text: #c94a30;
+
+  --spinner-track: #eee;
+  --spinner-active: #999;
+
+  --index-flat: #bbb;
+}
+
+/* 系统深色模式 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #242424;
+    --bg-card: #242424;
+    --bg-input: #2a2a2a;
+    --bg-input-focus: #3a3a3a;
+    --bg-modal: #2a2a2a;
+    --bg-advice: #2a2a2a;
+    --bg-advice-buy: #252525;
+    --bg-advice-hold: #332d1a;
+    --bg-advice-rebuild: #3a2220;
+
+    --text-primary: #e8e8e8;
+    --text-secondary: #888;
+    --text-muted: #777;
+    --text-label: #999;
+    --text-hint: #555;
+    --text-placeholder: #666;
+    --text-delete: #555;
+
+    --border-default: #404040;
+    --border-light: #333;
+    --border-lighter: #333;
+    --border-divider: #444;
+    --border-dashed: #444;
+    --border-index-divider: #444;
+
+    --btn-bg: #e8e8e8;
+    --btn-hover: #ccc;
+    --btn-text: #1a1a1a;
+    --btn-cancel-bg: #333;
+    --btn-cancel-text: #aaa;
+    --btn-cancel-hover: #3a3a3a;
+    --btn-danger-bg: #4a2020;
+    --btn-danger-text: #f87171;
+    --btn-danger-hover: #5a2828;
+    --btn-dashed-border: #444;
+    --btn-dashed-text: #777;
+
+    --modal-overlay: rgba(0, 0, 0, 0.65);
+    --modal-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    --modal-close: #666;
+    --modal-close-hover: #aaa;
+    --modal-input-bg: #333;
+
+    --code-badge-bg: #333;
+    --code-badge-text: #888;
+
+    --advice-buy-text: #bbb;
+    --index-flat: #888;
+
+    --spinner-track: #333;
+    --spinner-active: #777;
+  }
+}
+
+/* 手动深色模式 */
+[data-theme="dark"] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #242424;
+  --bg-card: #242424;
+  --bg-input: #2a2a2a;
+  --bg-input-focus: #3a3a3a;
+  --bg-modal: #2a2a2a;
+  --bg-advice: #2a2a2a;
+  --bg-advice-buy: #252525;
+  --bg-advice-hold: #332d1a;
+  --bg-advice-rebuild: #3a2220;
+
+  --text-primary: #e8e8e8;
+  --text-secondary: #888;
+  --text-muted: #777;
+  --text-label: #999;
+  --text-hint: #555;
+  --text-placeholder: #666;
+  --text-delete: #555;
+
+  --border-default: #404040;
+  --border-light: #333;
+  --border-lighter: #333;
+  --border-divider: #444;
+  --border-dashed: #444;
+  --border-index-divider: #444;
+
+  --btn-bg: #e8e8e8;
+  --btn-hover: #ccc;
+  --btn-text: #1a1a1a;
+  --btn-cancel-bg: #333;
+  --btn-cancel-text: #aaa;
+  --btn-cancel-hover: #3a3a3a;
+  --btn-danger-bg: #4a2020;
+  --btn-danger-text: #f87171;
+  --btn-danger-hover: #5a2828;
+  --btn-dashed-border: #444;
+  --btn-dashed-text: #777;
+
+  --modal-overlay: rgba(0, 0, 0, 0.65);
+  --modal-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  --modal-close: #666;
+  --modal-close-hover: #aaa;
+  --modal-input-bg: #333;
+
+  --code-badge-bg: #333;
+  --code-badge-text: #888;
+
+  --advice-buy-text: #bbb;
+  --index-flat: #888;
+
+  --spinner-track: #333;
+  --spinner-active: #777;
+}
+
+/* 手动浅色模式（覆盖系统深色） */
+[data-theme="light"] {
+  /* 使用 :root 默认值，无需重置 */
+}
+
 body {
   width: 360px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #fafafa;
-  color: #1a1a1a;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 /* 市场指数栏 - 极简 */
@@ -18,8 +196,8 @@ body {
   justify-content: center;
   gap: 12px;
   padding: 8px 12px;
-  background: #fff;
-  border-bottom: 1px solid #f0f0f0;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .index-item {
@@ -30,14 +208,14 @@ body {
 
 .index-name {
   font-size: 11px;
-  color: #999;
+  color: var(--text-secondary);
   white-space: nowrap;
 }
 
 .index-value {
   font-size: 14px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--text-primary);
   min-width: 50px;
   text-align: right;
   font-variant-numeric: tabular-nums;
@@ -60,13 +238,13 @@ body {
 }
 
 .index-change.flat {
-  color: #bbb;
+  color: var(--index-flat);
 }
 
 .index-divider {
   width: 1px;
   height: 18px;
-  background: #eee;
+  background: var(--border-index-divider);
 }
 
 /* 主容器 */
@@ -82,8 +260,8 @@ body {
   align-items: center;
   gap: 10px;
   padding: 16px 20px;
-  background: #fff;
-  border-bottom: 1px solid #f0f0f0;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .logo {
@@ -96,7 +274,7 @@ body {
 .title {
   font-size: 15px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--text-primary);
   letter-spacing: -0.2px;
 }
 
@@ -118,21 +296,21 @@ body {
 .input {
   flex: 1;
   padding: 9px 12px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-default);
   border-radius: 8px;
   font-size: 13px;
   outline: none;
   transition: border-color 0.2s;
-  background: #fff;
-  color: #1a1a1a;
+  background: var(--bg-input);
+  color: var(--text-primary);
 }
 
 .input:focus {
-  border-color: #1a1a1a;
+  border-color: var(--text-primary);
 }
 
 .input::placeholder {
-  color: #c0c0c0;
+  color: var(--text-placeholder);
 }
 
 .btn {
@@ -150,13 +328,13 @@ body {
 }
 
 .btn-add {
-  background: #1a1a1a;
-  color: #fff;
+  background: var(--btn-bg);
+  color: var(--btn-text);
   white-space: nowrap;
 }
 
 .btn-add:hover {
-  background: #333;
+  background: var(--btn-hover);
 }
 
 /* 基金列表 */
@@ -167,17 +345,17 @@ body {
 }
 
 .fund-card {
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 10px;
   padding: 12px 14px;
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--border-light);
   position: relative;
   animation: fadeIn 0.25s ease;
   transition: border-color 0.2s, background-color 0.2s;
 }
 
 .fund-card:hover {
-  border-color: #e0e0e0;
+  border-color: var(--border-default);
 }
 
 @keyframes fadeIn {
@@ -195,7 +373,7 @@ body {
 .fund-name {
   font-size: 14px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -204,8 +382,8 @@ body {
 
 .fund-code {
   font-size: 11px;
-  color: #999;
-  background: #f5f5f5;
+  color: var(--code-badge-text);
+  background: var(--code-badge-bg);
   padding: 2px 7px;
   border-radius: 4px;
   margin-left: 8px;
@@ -217,7 +395,7 @@ body {
   background: none;
   border: none;
   cursor: pointer;
-  color: #d0d0d0;
+  color: var(--text-delete);
   font-size: 16px;
   line-height: 1;
   padding: 3px 5px;
@@ -245,7 +423,7 @@ body {
 
 .fund-info-label {
   font-size: 11px;
-  color: #aaa;
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -253,7 +431,7 @@ body {
 .fund-info-value {
   font-size: 14px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
 
@@ -266,12 +444,12 @@ body {
 }
 
 .fund-info-value.flat {
-  color: #1a1a1a;
+  color: var(--text-primary);
 }
 
 .no-estimate-tip {
   font-size: 10px;
-  color: #ccc;
+  color: var(--text-hint);
   margin-left: 3px;
   cursor: help;
 }
@@ -280,7 +458,7 @@ body {
 .fund-holding-compact {
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px solid #f5f5f5;
+  border-top: 1px solid var(--border-lighter);
   position: relative;
 }
 
@@ -291,7 +469,7 @@ body {
   background: none;
   border: none;
   cursor: pointer;
-  color: #d0d0d0;
+  color: var(--text-delete);
   font-size: 13px;
   padding: 2px 4px;
   border-radius: 4px;
@@ -299,7 +477,7 @@ body {
 }
 
 .fund-holding-compact .holding-edit:hover {
-  color: #888;
+  color: var(--text-muted);
 }
 
 .holding-row {
@@ -311,16 +489,16 @@ body {
 }
 
 .holding-label {
-  color: #777;
+  color: var(--text-label);
 }
 
 .holding-divider {
-  color: #e0e0e0;
+  color: var(--border-default);
   font-size: 10px;
 }
 
 .holding-profit {
-  color: var(--profit-color, #1a1a1a);
+  color: var(--profit-color, var(--text-primary));
   margin-left: auto;
 }
 
@@ -332,42 +510,42 @@ body {
 .holding-today {
   margin-top: 6px;
   font-size: 11px;
-  color: #999;
+  color: var(--text-secondary);
 }
 
 .fund-holding-empty {
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px solid #f5f5f5;
+  border-top: 1px solid var(--border-lighter);
   text-align: center;
 }
 
 .btn-add-holding {
   background: none;
-  border: 1px dashed #ddd;
+  border: 1px dashed var(--btn-dashed-border);
   border-radius: 6px;
   padding: 6px 16px;
   font-size: 12px;
-  color: #999;
+  color: var(--btn-dashed-text);
   cursor: pointer;
   transition: all 0.15s;
 }
 
 .btn-add-holding:hover {
-  border-color: #999;
-  color: #666;
+  border-color: var(--text-secondary);
+  color: var(--text-muted);
 }
 
 .fund-update-time {
   margin-top: 6px;
   font-size: 10px;
-  color: #d0d0d0;
+  color: var(--text-hint);
   text-align: right;
 }
 
 .empty-tip {
   text-align: center;
-  color: #ccc;
+  color: var(--text-hint);
   font-size: 13px;
   padding: 36px 0;
 }
@@ -378,15 +556,15 @@ body {
   justify-content: center;
   gap: 8px;
   padding: 20px;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 13px;
 }
 
 .spinner {
   width: 16px;
   height: 16px;
-  border: 2px solid #eee;
-  border-top-color: #999;
+  border: 2px solid var(--spinner-track);
+  border-top-color: var(--spinner-active);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
@@ -401,24 +579,24 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fff;
-  border-top: 1px solid #f0f0f0;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-light);
 }
 
 .settings-link {
   font-size: 12px;
-  color: #999;
+  color: var(--text-secondary);
   text-decoration: none;
   transition: color 0.15s;
 }
 
 .settings-link:hover {
-  color: #555;
+  color: var(--text-muted);
 }
 
 .version {
   font-size: 11px;
-  color: #d0d0d0;
+  color: var(--text-hint);
 }
 
 /* 弹窗 - 极简风格 */
@@ -428,7 +606,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--modal-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -438,10 +616,10 @@ body {
 }
 
 .modal-content {
-  background: #fff;
+  background: var(--bg-modal);
   border-radius: 14px;
   width: 300px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--modal-shadow);
   animation: modalSlideIn 0.18s ease;
 }
 
@@ -460,14 +638,14 @@ body {
 .modal-header h3 {
   font-size: 15px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--text-primary);
 }
 
 .modal-close {
   background: none;
   border: none;
   cursor: pointer;
-  color: #c0c0c0;
+  color: var(--modal-close);
   font-size: 18px;
   line-height: 1;
   padding: 3px;
@@ -476,7 +654,7 @@ body {
 }
 
 .modal-close:hover {
-  color: #555;
+  color: var(--modal-close-hover);
 }
 
 .modal-body {
@@ -490,7 +668,7 @@ body {
 .modal-form-group label {
   display: block;
   font-size: 12px;
-  color: #777;
+  color: var(--text-label);
   margin-bottom: 5px;
   font-weight: 500;
 }
@@ -498,22 +676,22 @@ body {
 .modal-form-group input {
   width: 100%;
   padding: 9px 12px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-default);
   border-radius: 8px;
   font-size: 13px;
   outline: none;
   transition: border-color 0.15s;
-  color: #1a1a1a;
-  background: #fafafa;
+  color: var(--text-primary);
+  background: var(--modal-input-bg);
 }
 
 .modal-form-group input:focus {
-  border-color: #1a1a1a;
-  background: #fff;
+  border-color: var(--text-primary);
+  background: var(--bg-input-focus);
 }
 
 .modal-form-group input::placeholder {
-  color: #c0c0c0;
+  color: var(--text-placeholder);
 }
 
 .modal-footer {
@@ -521,12 +699,12 @@ body {
   justify-content: flex-end;
   gap: 8px;
   padding: 12px 18px 16px;
-  border-top: 1px solid #f5f5f5;
+  border-top: 1px solid var(--border-lighter);
 }
 
 .btn-modal-cancel {
-  background: #f5f5f5;
-  color: #666;
+  background: var(--btn-cancel-bg);
+  color: var(--btn-cancel-text);
   padding: 8px 14px;
   border: none;
   border-radius: 8px;
@@ -536,12 +714,12 @@ body {
 }
 
 .btn-modal-cancel:hover {
-  background: #eee;
+  background: var(--btn-cancel-hover);
 }
 
 .btn-modal-delete {
-  background: #fef2f2;
-  color: #dc2626;
+  background: var(--btn-danger-bg);
+  color: var(--btn-danger-text);
   padding: 8px 14px;
   border: none;
   border-radius: 8px;
@@ -551,12 +729,12 @@ body {
 }
 
 .btn-modal-delete:hover {
-  background: #fee2e2;
+  background: var(--btn-danger-hover);
 }
 
 .btn-modal-save {
-  background: #1a1a1a;
-  color: #fff;
+  background: var(--btn-bg);
+  color: var(--btn-text);
   padding: 8px 18px;
   border: none;
   border-radius: 8px;
@@ -566,7 +744,7 @@ body {
 }
 
 .btn-modal-save:hover {
-  background: #333;
+  background: var(--btn-hover);
 }
 
 /* 策略建议 - 极简紧凑 */
@@ -579,38 +757,38 @@ body {
   border-radius: 8px;
   font-size: 12px;
   animation: fadeIn 0.25s ease;
-  background: #fafafa;
-  border: 1px solid #f0f0f0;
+  background: var(--bg-advice);
+  border: 1px solid var(--border-light);
 }
 
 .strategy-advice.advice-buy {
-  background: #fafafa;
-  border-color: #e8e8e8;
+  background: var(--bg-advice-buy);
+  border-color: var(--border-divider);
 }
 
 .strategy-advice.advice-buy .advice-text,
 .strategy-advice.advice-buy .advice-icon {
-  color: #444;
+  color: var(--advice-buy-text);
 }
 
 .strategy-advice.advice-hold {
-  background: #fffbf0;
+  background: var(--bg-advice-hold);
   border-color: #f5eed5;
 }
 
 .strategy-advice.advice-hold .advice-text,
 .strategy-advice.advice-hold .advice-icon {
-  color: #996600;
+  color: var(--advice-hold-text);
 }
 
 .strategy-advice.advice-rebuild {
-  background: #fef6f4;
+  background: var(--bg-advice-rebuild);
   border-color: #f5e0da;
 }
 
 .strategy-advice.advice-rebuild .advice-text,
 .strategy-advice.advice-rebuild .advice-icon {
-  color: #c94a30;
+  color: var(--advice-rebuild-text);
 }
 
 .advice-icon {
@@ -620,404 +798,11 @@ body {
 
 .advice-text {
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--text-primary);
   white-space: nowrap;
 }
 
 .advice-detail {
-  color: #888;
+  color: var(--text-secondary);
   font-size: 11px;
-}
-
-/* ========== 夜间模式（自动跟随系统 + 手动切换）========== */
-@media (prefers-color-scheme: dark),
-[data-theme="dark"] {
-  body {
-    background: #1a1a1a;
-    color: #e8e8e8;
-  }
-
-  .market-index-bar {
-    background: #242424;
-    border-bottom-color: #333;
-  }
-
-  .index-name {
-    color: #888;
-  }
-
-  .index-value {
-    color: #e8e8e8;
-  }
-
-  .index-divider {
-    background: #444;
-  }
-
-  .header {
-    background: #242424;
-    border-bottom-color: #333;
-  }
-
-  .title {
-    color: #e8e8e8;
-  }
-
-  .input {
-    background: #2a2a2a;
-    border-color: #404040;
-    color: #e8e8e8;
-  }
-
-  .input:focus {
-    border-color: #666;
-  }
-
-  .input::placeholder {
-    color: #666;
-  }
-
-  .btn-add {
-    background: #e8e8e8;
-    color: #1a1a1a;
-  }
-
-  .btn-add:hover {
-    background: #ccc;
-  }
-
-  .fund-card {
-    background: #242424;
-    border-color: #333;
-  }
-
-  .fund-card:hover {
-    border-color: #444;
-  }
-
-  .fund-name {
-    color: #e8e8e8;
-  }
-
-  .fund-code {
-    color: #888;
-    background: #333;
-  }
-
-  .fund-delete {
-    color: #555;
-  }
-
-  .fund-delete:hover {
-    color: #ef5350;
-  }
-
-  .fund-info-label {
-    color: #777;
-  }
-
-  .fund-info-value,
-  .fund-info-value.flat {
-    color: #e8e8e8;
-  }
-
-  .no-estimate-tip {
-    color: #555;
-  }
-
-  .fund-holding-compact {
-    border-top-color: #333;
-  }
-
-  .fund-holding-compact .holding-edit {
-    color: #555;
-  }
-
-  .fund-holding-compact .holding-edit:hover {
-    color: #999;
-  }
-
-  .holding-label {
-    color: #999;
-  }
-
-  .holding-divider {
-    color: #555;
-  }
-
-  .holding-today {
-    color: #777;
-  }
-
-  .fund-holding-empty {
-    border-top-color: #333;
-  }
-
-  .btn-add-holding {
-    border-color: #444;
-    color: #777;
-  }
-
-  .btn-add-holding:hover {
-    border-color: #666;
-    color: #aaa;
-  }
-
-  .fund-update-time {
-    color: #555;
-  }
-
-  .empty-tip {
-    color: #555;
-  }
-
-  .loading {
-    color: #777;
-  }
-
-  .spinner {
-    border-color: #333;
-    border-top-color: #777;
-  }
-
-  .footer {
-    background: #242424;
-    border-top-color: #333;
-  }
-
-  .settings-link {
-    color: #777;
-  }
-
-  .settings-link:hover {
-    color: #aaa;
-  }
-
-  .version {
-    color: #555;
-  }
-
-  .modal-overlay {
-    background: rgba(0, 0, 0, 0.65);
-  }
-
-  .modal-content {
-    background: #2a2a2a;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-  }
-
-  .modal-header h3 {
-    color: #e8e8e8;
-  }
-
-  .modal-close {
-    color: #666;
-  }
-
-  .modal-close:hover {
-    color: #aaa;
-  }
-
-  .modal-form-group label {
-    color: #999;
-  }
-
-  .modal-form-group input {
-    background: #333;
-    border-color: #444;
-    color: #e8e8e8;
-  }
-
-  .modal-form-group input:focus {
-    border-color: #666;
-    background: #3a3a3a;
-  }
-
-  .modal-form-group input::placeholder {
-    color: #666;
-  }
-
-  .modal-footer {
-    border-top-color: #333;
-  }
-
-  .btn-modal-cancel {
-    background: #333;
-    color: #aaa;
-  }
-
-  .btn-modal-cancel:hover {
-    background: #3a3a3a;
-  }
-
-  .btn-modal-delete {
-    background: #4a2020;
-    color: #f87171;
-  }
-
-  .btn-modal-delete:hover {
-    background: #5a2828;
-  }
-
-  .btn-modal-save {
-    background: #e8e8e8;
-    color: #1a1a1a;
-  }
-
-  .btn-modal-save:hover {
-    background: #ccc;
-  }
-
-  /* 策略建议 - 夜间模式 */
-  .strategy-advice {
-    background: #2a2a2a;
-    border-color: #333;
-  }
-
-  .strategy-advice.advice-buy {
-    background: #252525;
-    border-color: #3a3a3a;
-  }
-
-  .strategy-advice.advice-buy .advice-text,
-  .strategy-advice.advice-buy .advice-icon {
-    color: #bbb;
-  }
-
-  .strategy-advice.advice-hold {
-    background: #332d1a;
-    border-color: #4a3f20;
-  }
-
-  .strategy-advice.advice-rebuild {
-    background: #3a2220;
-    border-color: #523330;
-  }
-
-  .advice-text {
-    color: #e8e8e8;
-  }
-
-  .index-change.flat {
-    color: #888;
-  }
-}
-
-/* 强制浅色模式（用户手动选择浅色，覆盖系统深色） */
-[data-theme="light"] {
-  body {
-    background: #fafafa;
-    color: #1a1a1a;
-  }
-
-  .market-index-bar {
-    background: #fff;
-    border-bottom-color: #f0f0f0;
-  }
-
-  .index-name { color: #999; }
-  .index-value { color: #1a1a1a; }
-  .index-divider { background: #eee; }
-
-  .header {
-    background: #fff;
-    border-bottom-color: #f0f0f0;
-  }
-
-  .title { color: #1a1a1a; }
-
-  .input {
-    background: #fff;
-    border-color: #e0e0e0;
-    color: #1a1a1a;
-  }
-  .input:focus { border-color: #1a1a1a; }
-  .input::placeholder { color: #c0c0c0; }
-
-  .btn-add {
-    background: #1a1a1a;
-    color: #fff;
-  }
-  .btn-add:hover { background: #333; }
-
-  .fund-card {
-    background: #fff;
-    border-color: #f0f0f0;
-  }
-  .fund-card:hover { border-color: #e0e0e0; }
-
-  .fund-name, .fund-info-value, .fund-info-value.flat, .advice-text { color: #1a1a1a; }
-  .fund-code { color: #999; background: #f5f5f5; }
-  .fund-delete { color: #d0d0d0; }
-  .fund-delete:hover { color: #e53935; }
-  .fund-info-label { color: #aaa; }
-
-  .no-estimate-tip { color: #ccc; }
-  .holding-label { color: #777; }
-  .holding-divider { color: #e0e0e0; }
-  .holding-today { color: #999; }
-
-  .fund-holding-compact { border-top-color: #f5f5f5; }
-  .fund-holding-empty { border-top-color: #f5f5f5; }
-
-  .btn-add-holding {
-    border-color: #ddd;
-    color: #999;
-  }
-  .btn-add-holding:hover { border-color: #999; color: #666; }
-
-  .fund-update-time { color: #d0d0d0; }
-  .empty-tip { color: #ccc; }
-  .loading { color: #999; }
-
-  .spinner {
-    border-color: #eee;
-    border-top-color: #999;
-  }
-
-  .footer {
-    background: #fff;
-    border-top-color: #f0f0f0;
-  }
-  .settings-link { color: #999; }
-  .settings-link:hover { color: #555; }
-  .version { color: #d0d0d0; }
-
-  .modal-overlay { background: rgba(0, 0, 0, 0.3); }
-  .modal-content {
-    background: #fff;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
-  }
-  .modal-header h3 { color: #1a1a1a; }
-  .modal-close { color: #c0c0c0; }
-  .modal-close:hover { color: #555; }
-
-  .modal-form-group label { color: #777; }
-  .modal-form-group input { background: #fafafa; border-color: #e0e0e0; color: #1a1a1a; }
-  .modal-form-group input:focus { border-color: #1a1a1a; background: #fff; }
-  .modal-form-group input::placeholder { color: #c0c0c0; }
-
-  .modal-footer { border-top-color: #f5f5f5; }
-
-  .btn-modal-cancel { background: #f5f5f5; color: #666; }
-  .btn-modal-cancel:hover { background: #eee; }
-
-  .btn-modal-delete { background: #fef2f2; color: #dc2626; }
-  .btn-modal-delete:hover { background: #fee2e2; }
-
-  .btn-modal-save { background: #1a1a1a; color: #fff; }
-  .btn-modal-save:hover { background: #333; }
-
-  /* 策略建议 - 浅色 */
-  .strategy-advice {
-    background: #fafafa;
-    border-color: #f0f0f0;
-  }
-  .strategy-advice.advice-buy { background: #fafafa; border-color: #e8e8e8; }
-  .strategy-advice.advice-buy .advice-text,
-  .strategy-advice.advice-buy .advice-icon { color: #444; }
-  .strategy-advice.advice-hold { background: #fffbf0; border-color: #f5eed5; }
-  .strategy-advice.advice-rebuild { background: #fef6f4; border-color: #f5e0da; }
-
-  .index-change.flat { color: #bbb; }
 }
