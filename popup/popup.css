@@ -459,13 +459,9 @@ body {
   margin-top: 10px;
   padding-top: 10px;
   border-top: 1px solid var(--border-lighter);
-  position: relative;
 }
 
 .fund-holding-compact .holding-edit {
-  position: absolute;
-  top: 10px;
-  right: 0;
   background: none;
   border: none;
   cursor: pointer;
@@ -486,7 +482,6 @@ body {
   gap: 8px;
   flex-wrap: wrap;
   font-size: 12px;
-  padding-right: 28px;
 }
 
 .holding-label {
@@ -519,22 +514,6 @@ body {
   padding-top: 10px;
   border-top: 1px solid var(--border-lighter);
   text-align: center;
-}
-
-.btn-add-holding {
-  background: none;
-  border: 1px dashed var(--btn-dashed-border);
-  border-radius: 6px;
-  padding: 6px 16px;
-  font-size: 12px;
-  color: var(--btn-dashed-text);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.btn-add-holding:hover {
-  border-color: var(--text-secondary);
-  color: var(--text-muted);
 }
 
 .fund-update-time {
@@ -806,4 +785,164 @@ body {
 .advice-detail {
   color: var(--text-secondary);
   font-size: 11px;
+}
+
+/* 持仓操作按钮区 */
+.holding-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.btn-buy-record {
+  background: none;
+  border: 1px dashed var(--border-default);
+  border-radius: 4px;
+  padding: 1px 8px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.btn-buy-record:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+
+.fund-holding-compact .holding-edit {
+  position: static;
+}
+
+.holding-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.holding-detail-row .holding-divider {
+  font-size: 9px;
+}
+
+/* 买入预览 */
+.buy-preview {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: var(--bg-advice);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.preview-shares {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.modal-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+/* 持仓记录列表 */
+.records-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--bg-advice);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.records-summary span:nth-child(even) {
+  color: var(--border-default);
+  font-size: 10px;
+}
+
+.records-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.record-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-lighter);
+}
+
+.record-item:last-child {
+  border-bottom: none;
+}
+
+.record-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 12px;
+}
+
+.record-amount {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.record-nav,
+.record-shares {
+  color: var(--text-secondary);
+}
+
+.record-date {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.btn-record-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-delete);
+  font-size: 14px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+
+.btn-record-delete:hover {
+  color: #e53935;
+}
+
+.no-records {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 16px 0;
+}
+
+/* 空持仓时买入按钮 */
+.fund-holding-empty .btn-buy-record {
+  border: 1px dashed var(--btn-dashed-border);
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-size: 12px;
+  color: var(--btn-dashed-text);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.fund-holding-empty .btn-buy-record:hover {
+  border-color: var(--text-secondary);
+  color: var(--text-muted);
 }

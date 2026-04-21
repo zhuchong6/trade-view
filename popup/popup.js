@@ -134,7 +134,7 @@ async function saveHoldings(holdings) {
   });
 }
 
-// 保存单只基金持仓
+// 保存单只基金持仓（兼容旧格式）
 async function saveFundHolding(code, buyNav, shares) {
   const holdings = await getHoldings();
   if (buyNav && shares) {
@@ -143,6 +143,79 @@ async function saveFundHolding(code, buyNav, shares) {
     delete holdings[code];
   }
   await saveHoldings(holdings);
+}
+
+// 迁移旧格式到新格式：{buyNav, shares} -> {records: [{amount, nav, date}]}
+function migrateHoldingFormat(holding) {
+  if (!holding) return null;
+  // 已经是新格式
+  if (holding.records && Array.isArray(holding.records)) return holding;
+  // 旧格式：{buyNav, shares} -> 转为新格式
+  if (holding.buyNav && holding.shares) {
+    return {
+      records: [{
+        amount: parseFloat((holding.buyNav * holding.shares).toFixed(2)),
+        nav: holding.buyNav,
+        date: '',
+      }]
+    };
+  }
+  return null;
+}
+
+// 获取规范化后的持仓（自动迁移）
+async function getNormalizedHoldings() {
+  const holdings = await getHoldings();
+  const normalized = {};
+  for (const code of Object.keys(holdings)) {
+    const migrated = migrateHoldingFormat(holdings[code]);
+    if (migrated) {
+      normalized[code] = migrated;
+    }
+  }
+  return normalized;
+}
+
+// 保存买入记录
+async function saveBuyRecord(code, amount, nav, date) {
+  const holdings = await getNormalizedHoldings();
+  if (!holdings[code]) {
+    holdings[code] = { records: [] };
+  }
+  holdings[code].records.push({
+    amount: parseFloat(amount),
+    nav: parseFloat(nav),
+    date: date || '',
+  });
+  await saveHoldings(holdings);
+}
+
+// 删除单条买入记录
+async function deleteBuyRecord(code, index) {
+  const holdings = await getNormalizedHoldings();
+  if (!holdings[code] || !holdings[code].records) return;
+  holdings[code].records.splice(index, 1);
+  if (holdings[code].records.length === 0) {
+    delete holdings[code];
+  }
+  await saveHoldings(holdings);
+}
+
+// 从 records 计算汇总持仓信息
+function calculateHoldingFromRecords(records) {
+  if (!records || records.length === 0) return null;
+  let totalAmount = 0;
+  let totalShares = 0;
+  for (const r of records) {
+    totalAmount += r.amount;
+    totalShares += r.nav > 0 ? r.amount / r.nav : 0;
+  }
+  const avgNav = totalShares > 0 ? totalAmount / totalShares : 0;
+  return {
+    totalAmount: totalAmount,
+    totalShares: totalShares,
+    avgNav: avgNav,
+  };
 }
 
 // 通过 background 获取基金数据
@@ -175,23 +248,42 @@ async function fetchAllFunds(codes) {
   return results;
 }
 
-// 计算收益
-function calculateProfit(fund, holding, colors) {
-  if (!holding || !holding.buyNav || !holding.shares) {
-    return null;
-  }
+// 计算收益（支持新格式 records 和旧格式 buyNav/shares）
+function calculateProfit(fund, holding) {
+  if (!holding) return null;
 
-  const buyNav = holding.buyNav;
-  const shares = holding.shares;
   const currentNav = fund.currentNav ? parseFloat(fund.currentNav) : null;
   const estimatedNav = fund.estimatedNav ? parseFloat(fund.estimatedNav) : null;
-
   if (!currentNav) return null;
+
+  let buyNav, shares, costValue, totalAmount;
+
+  if (holding.records && Array.isArray(holding.records) && holding.records.length > 0) {
+    // 新格式：从 records 计算
+    const summary = calculateHoldingFromRecords(holding.records);
+    if (!summary) return null;
+    buyNav = summary.avgNav;
+    shares = summary.totalShares;
+    costValue = summary.totalAmount;
+    totalAmount = summary.totalAmount;
+  } else if (holding.buyNav && holding.shares) {
+    // 旧格式兼容
+    buyNav = holding.buyNav;
+    shares = holding.shares;
+    costValue = buyNav * shares;
+    totalAmount = costValue;
+  } else {
+    return null;
+  }
 
   // 历史收益 = (当前净值 - 买入净值) * 份额
   const totalProfit = (currentNav - buyNav) * shares;
   // 历史收益率
   const totalProfitRate = ((currentNav - buyNav) / buyNav) * 100;
+
+  // 基于预估净值的收益率（策略判断用，优先用预估净值）
+  const effectiveNav = estimatedNav || currentNav;
+  const estimatedProfitRate = ((effectiveNav - buyNav) / buyNav) * 100;
 
   // 今日预估收益 = (估算净值 - 当前净值) * 份额
   let todayProfit = null;
@@ -201,17 +293,17 @@ function calculateProfit(fund, holding, colors) {
 
   // 持仓市值
   const currentValue = currentNav * shares;
-  // 持仓成本
-  const costValue = buyNav * shares;
 
   const isProfit = totalProfit >= 0;
 
   return {
     totalProfit: totalProfit.toFixed(2),
     totalProfitRate: totalProfitRate.toFixed(2),
+    estimatedProfitRate: estimatedProfitRate.toFixed(2),
     todayProfit: todayProfit !== null ? todayProfit.toFixed(2) : null,
     currentValue: currentValue.toFixed(2),
     costValue: costValue.toFixed(2),
+    totalAmount: totalAmount.toFixed(2),
     buyNav: buyNav.toFixed(4),
     shares: shares.toFixed(2),
     isProfit,
@@ -221,7 +313,7 @@ function calculateProfit(fund, holding, colors) {
 
 // 渲染基金卡片
 async function renderFundCards(funds) {
-  const holdings = await getHoldings();
+  const holdings = await getNormalizedHoldings();
   const colors = await getColorSettings();
   const strategy = await getStrategySettings();
 
@@ -238,7 +330,7 @@ async function renderFundCards(funds) {
     card.dataset.code = fund.code;
 
     const holding = holdings[fund.code];
-    const profit = calculateProfit(fund, holding, colors);
+    const profit = calculateProfit(fund, holding);
 
     // 卡片盈利/亏损背景色
     if (profit) {
@@ -257,6 +349,9 @@ async function renderFundCards(funds) {
     const hasNoEstimate = fund.hasRealTimeEstimate === false;
     const noEstimateTip = hasNoEstimate ? '<span class="no-estimate-tip" title="该基金不支持实时估值">(不支持)</span>' : '';
 
+    // 当前净值（用于买入弹窗预填）
+    const currentNavForBuy = fund.currentNav || '';
+
     // 持仓信息区域 - 紧凑一行式
     let holdingHTML = '';
     if (profit) {
@@ -268,13 +363,21 @@ async function renderFundCards(funds) {
 
       holdingHTML = ''
         + '<div class="fund-holding-compact" style="--profit-color: ' + profitTextColor + '">'
-        +   '<button class="holding-edit" data-code="' + fund.code + '" title="编辑持仓">✎</button>'
+        +   '<div class="holding-actions">'
+        +     '<button class="btn-buy-record" data-code="' + fund.code + '" data-nav="' + currentNavForBuy + '" title="买入">+ 买入</button>'
+        +     '<button class="holding-edit" data-code="' + fund.code + '" title="编辑持仓">✎</button>'
+        +   '</div>'
         +   '<div class="holding-row">'
-        +     '<span class="holding-label">成本 ' + profit.costValue + '</span>'
+        +     '<span class="holding-label">投入 ' + profit.costValue + '</span>'
         +     '<span class="holding-divider">|</span>'
         +     '<span class="holding-label">市值 ' + profit.currentValue + '</span>'
         +     '<span class="holding-divider">|</span>'
         +     '<span class="holding-profit">收益 <strong>' + profitSign + profit.totalProfit + '</strong> (' + profitSign + profit.totalProfitRate + '%)</span>'
+        +   '</div>'
+        +   '<div class="holding-detail-row">'
+        +     '<span class="holding-label">份额 ' + profit.shares + '</span>'
+        +     '<span class="holding-divider">|</span>'
+        +     '<span class="holding-label">成本净值 ' + profit.buyNav + '</span>'
         +   '</div>'
         +   todayProfitStr
         + '</div>';
@@ -293,7 +396,7 @@ async function renderFundCards(funds) {
     } else {
       holdingHTML = `
         <div class="fund-holding-empty">
-          <button class="btn-add-holding" data-code="${fund.code}">+ 添加持仓</button>
+          <button class="btn-buy-record" data-code="${fund.code}" data-nav="${currentNavForBuy}">+ 买入</button>
         </div>
       `;
     }
@@ -331,11 +434,13 @@ async function renderFundCards(funds) {
   });
 }
 
-// 显示持仓编辑弹窗
-function showHoldingModal(code, existingHolding) {
-  // 移除已有弹窗
+// 显示买入弹窗
+function showBuyModal(code, currentNav) {
   const existingModal = document.getElementById('holdingModal');
   if (existingModal) existingModal.remove();
+
+  // 默认日期为今天
+  const today = new Date().toISOString().split('T')[0];
 
   const modal = document.createElement('div');
   modal.id = 'holdingModal';
@@ -343,48 +448,71 @@ function showHoldingModal(code, existingHolding) {
   modal.innerHTML = `
     <div class="modal-content">
       <div class="modal-header">
-        <h3>编辑持仓 - ${code}</h3>
+        <h3>买入 - ${code}</h3>
         <button class="modal-close" id="modalClose">×</button>
       </div>
       <div class="modal-body">
         <div class="modal-form-group">
-          <label for="buyNavInput">持有成本</label>
-          <input type="number" id="buyNavInput" step="0.0001" min="0" placeholder="如 1.5000" value="${existingHolding?.buyNav || ''}">
+          <label for="buyAmountInput">买入金额 (元)</label>
+          <input type="number" id="buyAmountInput" step="0.01" min="0.01" placeholder="如 100.00" autofocus>
         </div>
         <div class="modal-form-group">
-          <label for="sharesInput">持有份额</label>
-          <input type="number" id="sharesInput" step="0.01" min="0" placeholder="如 1000.00" value="${existingHolding?.shares || ''}">
+          <label for="buyNavInput">买入净值</label>
+          <input type="number" id="buyNavInput" step="0.0001" min="0.0001" placeholder="如 1.5000" value="${currentNav || ''}">
+          <div class="modal-hint">默认为当前净值，可手动修改</div>
         </div>
+        <div class="modal-form-group">
+          <label for="buyDateInput">买入日期</label>
+          <input type="date" id="buyDateInput" value="${today}">
+        </div>
+        <div id="buyPreview" class="buy-preview"></div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-modal-cancel" id="modalCancel">取消</button>
-        <button class="btn btn-modal-delete" id="modalDelete" style="${existingHolding ? '' : 'display:none'}">删除持仓</button>
-        <button class="btn btn-modal-save" id="modalSave">保存</button>
+        <button class="btn btn-modal-save" id="modalSave">确认买入</button>
       </div>
     </div>
   `;
 
   document.body.appendChild(modal);
 
+  // 实时预览份额
+  const amountInput = document.getElementById('buyAmountInput');
+  const navInput = document.getElementById('buyNavInput');
+  const preview = document.getElementById('buyPreview');
+
+  function updatePreview() {
+    const amount = parseFloat(amountInput.value);
+    const nav = parseFloat(navInput.value);
+    if (amount > 0 && nav > 0) {
+      const shares = (amount / nav).toFixed(2);
+      preview.innerHTML = `<span class="preview-shares">预计份额: ${shares}</span>`;
+    } else {
+      preview.innerHTML = '';
+    }
+  }
+
+  amountInput.addEventListener('input', updatePreview);
+  navInput.addEventListener('input', updatePreview);
+
   // 绑定事件
   document.getElementById('modalClose').addEventListener('click', closeModal);
   document.getElementById('modalCancel').addEventListener('click', closeModal);
-  document.getElementById('modalDelete').addEventListener('click', async () => {
-    await saveFundHolding(code, null, null);
-    closeModal();
-    await refreshAll();
-  });
   document.getElementById('modalSave').addEventListener('click', async () => {
-    const buyNav = document.getElementById('buyNavInput').value;
-    const shares = document.getElementById('sharesInput').value;
+    const amount = document.getElementById('buyAmountInput').value;
+    const nav = document.getElementById('buyNavInput').value;
+    const date = document.getElementById('buyDateInput').value;
 
-    if (!buyNav || !shares || parseFloat(buyNav) <= 0 || parseFloat(shares) <= 0) {
-      document.getElementById('buyNavInput').style.borderColor = !buyNav || parseFloat(buyNav) <= 0 ? '#ff4d4f' : '';
-      document.getElementById('sharesInput').style.borderColor = !shares || parseFloat(shares) <= 0 ? '#ff4d4f' : '';
+    if (!amount || parseFloat(amount) <= 0) {
+      document.getElementById('buyAmountInput').style.borderColor = '#ff4d4f';
+      return;
+    }
+    if (!nav || parseFloat(nav) <= 0) {
+      document.getElementById('buyNavInput').style.borderColor = '#ff4d4f';
       return;
     }
 
-    await saveFundHolding(code, buyNav, shares);
+    await saveBuyRecord(code, amount, nav, date);
     closeModal();
     await refreshAll();
   });
@@ -394,8 +522,99 @@ function showHoldingModal(code, existingHolding) {
     if (e.target === modal) closeModal();
   });
 
-  // 聚焦到第一个输入框
-  document.getElementById('buyNavInput').focus();
+  document.getElementById('buyAmountInput').focus();
+}
+
+// 显示持仓详情弹窗（查看/删除买入记录）
+async function showHoldingModal(code) {
+  const existingModal = document.getElementById('holdingModal');
+  if (existingModal) existingModal.remove();
+
+  const holdings = await getNormalizedHoldings();
+  const holding = holdings[code];
+  const records = holding?.records || [];
+
+  const modal = document.createElement('div');
+  modal.id = 'holdingModal';
+  modal.className = 'modal-overlay';
+
+  // 生成记录列表HTML
+  let recordsHTML = '';
+  if (records.length > 0) {
+    recordsHTML = records.map((r, i) => `
+      <div class="record-item">
+        <div class="record-info">
+          <span class="record-amount">¥${r.amount.toFixed(2)}</span>
+          <span class="record-nav">净值 ${r.nav.toFixed(4)}</span>
+          <span class="record-shares">份额 ${(r.amount / r.nav).toFixed(2)}</span>
+          <span class="record-date">${r.date || '--'}</span>
+        </div>
+        <button class="btn-record-delete" data-code="${code}" data-index="${i}" title="删除此记录">×</button>
+      </div>
+    `).join('');
+  } else {
+    recordsHTML = '<div class="no-records">暂无买入记录</div>';
+  }
+
+  // 汇总信息
+  const summary = calculateHoldingFromRecords(records);
+  const summaryHTML = summary ? `
+    <div class="records-summary">
+      <span>总投入 ¥${summary.totalAmount.toFixed(2)}</span>
+      <span>|</span>
+      <span>总份额 ${summary.totalShares.toFixed(2)}</span>
+      <span>|</span>
+      <span>成本净值 ${summary.avgNav.toFixed(4)}</span>
+    </div>
+  ` : '';
+
+  modal.innerHTML = `
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>持仓详情 - ${code}</h3>
+        <button class="modal-close" id="modalClose">×</button>
+      </div>
+      <div class="modal-body">
+        ${summaryHTML}
+        <div class="records-list">${recordsHTML}</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-modal-cancel" id="modalCancel">关闭</button>
+        <button class="btn btn-modal-delete" id="modalDeleteAll">清空持仓</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // 绑定事件
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  document.getElementById('modalCancel').addEventListener('click', closeModal);
+
+  // 清空全部持仓
+  document.getElementById('modalDeleteAll').addEventListener('click', async () => {
+    if (!confirm('确定清空该基金的所有持仓记录？')) return;
+    await saveFundHolding(code, null, null);
+    closeModal();
+    await refreshAll();
+  });
+
+  // 删除单条记录
+  modal.addEventListener('click', async (e) => {
+    const deleteBtn = e.target.closest('.btn-record-delete');
+    if (deleteBtn) {
+      const recordCode = deleteBtn.dataset.code;
+      const recordIndex = parseInt(deleteBtn.dataset.index);
+      await deleteBuyRecord(recordCode, recordIndex);
+      closeModal();
+      await refreshAll();
+    }
+  });
+
+  // 点击遮罩关闭
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
 }
 
 function closeModal() {
@@ -467,11 +686,12 @@ fundList.addEventListener('click', async (e) => {
     return;
   }
 
-  // 添加持仓按钮
-  const addHoldingBtn = e.target.closest('.btn-add-holding');
-  if (addHoldingBtn) {
-    const code = addHoldingBtn.dataset.code;
-    showHoldingModal(code, null);
+  // 买入按钮
+  const buyBtn = e.target.closest('.btn-buy-record');
+  if (buyBtn) {
+    const code = buyBtn.dataset.code;
+    const nav = buyBtn.dataset.nav;
+    showBuyModal(code, nav);
     return;
   }
 
@@ -479,8 +699,7 @@ fundList.addEventListener('click', async (e) => {
   const editHoldingBtn = e.target.closest('.holding-edit');
   if (editHoldingBtn) {
     const code = editHoldingBtn.dataset.code;
-    const holdings = await getHoldings();
-    showHoldingModal(code, holdings[code]);
+    showHoldingModal(code);
     return;
   }
 });
