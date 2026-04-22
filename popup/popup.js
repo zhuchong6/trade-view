@@ -297,6 +297,8 @@ function calculateProfit(fund, holding) {
   const currentValue = currentNav * shares;
 
   const isProfit = totalProfit >= 0;
+  // 今日预估收益为正 → 红（盈利色），为负 → 绿（亏损色），无估值时回退到累计收益
+  const isTodayProfit = todayProfit !== null ? todayProfit >= 0 : isProfit;
 
   return {
     totalProfit: totalProfit.toFixed(2),
@@ -309,7 +311,8 @@ function calculateProfit(fund, holding) {
     buyNav: buyNav.toFixed(4),
     shares: shares.toFixed(2),
     isProfit,
-    colorClass: isProfit ? 'profit' : 'loss',
+    isTodayProfit,
+    colorClass: isTodayProfit ? 'profit' : 'loss',
   };
 }
 
@@ -334,11 +337,11 @@ async function renderFundCards(funds) {
     const holding = holdings[fund.code];
     const profit = calculateProfit(fund, holding);
 
-    // 卡片盈利/亏损背景色
+    // 卡片盈利/亏损背景色（基于今日预估收益判断）
     if (profit) {
       card.classList.add(profit.colorClass);
-      const bgColor = profit.isProfit ? colors.profit : colors.loss;
-      const borderColor = profit.isProfit ? colors.profitBorder : colors.lossBorder;
+      const bgColor = profit.isTodayProfit ? colors.profit : colors.loss;
+      const borderColor = profit.isTodayProfit ? colors.profitBorder : colors.lossBorder;
       card.style.backgroundColor = bgColor;
       card.style.borderColor = borderColor;
     }
@@ -357,11 +360,13 @@ async function renderFundCards(funds) {
     // 持仓信息区域 - 紧凑一行式
     let holdingHTML = '';
     if (profit) {
-      const profitTextColor = profit.isProfit ? colors.profitText : colors.lossText;
+      const profitTextColor = profit.isTodayProfit ? colors.profitText : colors.lossText;
       const todayProfitStr = profit.todayProfit !== null
-        ? '<div class="holding-today">今日预估 ' + (parseFloat(profit.todayProfit) >= 0 ? '+' : '') + profit.todayProfit + '</div>'
+        ? '<div class="holding-today" style="color:' + (parseFloat(profit.todayProfit) >= 0 ? colors.profitText : colors.lossText) + '">今日预估 ' + (parseFloat(profit.todayProfit) >= 0 ? '+' : '') + profit.todayProfit + '</div>'
         : '';
       const profitSign = profit.isProfit ? '+' : '';
+      // 收益数字颜色：正→红，负→绿
+      const profitNumColor = profit.isProfit ? colors.profitText : colors.lossText;
 
       holdingHTML = ''
         + '<div class="fund-holding-compact" style="--profit-color: ' + profitTextColor + '">'
@@ -374,7 +379,7 @@ async function renderFundCards(funds) {
         +     '<span class="holding-divider">|</span>'
         +     '<span class="holding-label">市值 ' + profit.currentValue + '</span>'
         +     '<span class="holding-divider">|</span>'
-        +     '<span class="holding-profit">收益 <strong>' + profitSign + profit.totalProfit + '</strong> (' + profitSign + profit.totalProfitRate + '%)</span>'
+        +     '<span class="holding-profit" style="color:' + profitNumColor + '">收益 <strong>' + profitSign + profit.totalProfit + '</strong> (' + profitSign + profit.totalProfitRate + '%)</span>'
         +   '</div>'
         +   '<div class="holding-detail-row">'
         +     '<span class="holding-label">份额 ' + profit.shares + '</span>'
