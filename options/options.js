@@ -25,7 +25,7 @@ const DEFAULT_STRATEGY = {
   enabled: true,
   lossBuyAmount: 40,     // 浮亏时建议买入金额
   holdThreshold: 10,      // 小盈利持有阈值(%)
-  rebuildThreshold: 10,   // 高盈利重新建仓阈值(%)
+  rebuildThreshold: 10,   // 高盈利平仓止盈阈值(%)
 };
 
 // 颜色字段映射

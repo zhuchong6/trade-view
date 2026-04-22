@@ -69,35 +69,37 @@ async function getStrategySettings() {
   });
 }
 
-// 计算策略建议
-function calculateStrategyAdvice(profitRate, strategy) {
+// 计算策略建议（基于预估净值收益率判断）
+function calculateStrategyAdvice(profitRate, estimatedProfitRate, strategy) {
   if (!strategy.enabled || profitRate === null) return null;
 
-  const rate = parseFloat(profitRate);
+  const cumulativeRate = parseFloat(profitRate);
+  // 使用预估净值收益率（扣除今日预估后的收益）作为决策依据
+  const effectiveRate = estimatedProfitRate !== null ? parseFloat(estimatedProfitRate) : cumulativeRate;
 
-  if (rate < 0) {
-    // 浮亏 → 建议买
+  if (effectiveRate < 0) {
+    // 预估收益为负 → 建议加仓
     return {
       type: 'buy',
-      text: `建议买入 ¥${strategy.lossBuyAmount}`,
-      detail: `浮亏 ${rate.toFixed(2)}%，逢低补仓`,
+      text: `建议加仓 ¥${strategy.lossBuyAmount}`,
+      detail: `预估收益 ${effectiveRate.toFixed(2)}%，逢低补仓`,
       actionClass: 'advice-buy',
     };
-  } else if (rate < strategy.holdThreshold) {
-    // 盈利 < 阈值 → 不买
+  } else if (effectiveRate < strategy.holdThreshold) {
+    // 预估盈利 < 阈值 → 持有
     return {
       type: 'hold',
       text: '建议持有',
-      detail: `盈利 ${rate.toFixed(2)}%，未达止盈线`,
+      detail: `预估收益 ${effectiveRate.toFixed(2)}%，未达止盈线`,
       actionClass: 'advice-hold',
     };
   } else {
-    // 盈利 >= 阈值 → 重新建仓
+    // 预估盈利 >= 阈值 → 平仓止盈
     return {
-      type: 'rebuild',
-      text: '建议重新建仓',
-      detail: `盈利 ${rate.toFixed(2)}%，考虑止盈重置成本`,
-      actionClass: 'advice-rebuild',
+      type: 'sell',
+      text: '建议平仓止盈',
+      detail: `预估收益 ${effectiveRate.toFixed(2)}%，考虑止盈平仓`,
+      actionClass: 'advice-sell',
     };
   }
 }
@@ -382,10 +384,10 @@ async function renderFundCards(funds) {
         +   todayProfitStr
         + '</div>';
 
-      // 策略建议
-      const advice = calculateStrategyAdvice(profit.totalProfitRate, strategy);
+      // 策略建议（基于预估净值收益率判断）
+      const advice = calculateStrategyAdvice(profit.totalProfitRate, profit.estimatedProfitRate, strategy);
       if (advice) {
-        var iconMap = { buy: '[+]', hold: '[-]', rebuild: '[r]' };
+        var iconMap = { buy: '[+]', hold: '[-]', sell: '[x]' };
         holdingHTML += ''
           + '<div class="strategy-advice ' + advice.actionClass + '">'
           +   '<span class="advice-icon">' + (iconMap[advice.type] || '') + '</span>'

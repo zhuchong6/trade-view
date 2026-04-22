@@ -118,10 +118,10 @@
 
         <div id="strategyConfigArea">
 
-          <!-- 规则1: 浮亏加仓 -->
+          <!-- 规则1: 预估亏损加仓 -->
           <div class="strategy-rule">
-            <h3 class="rule-title">规则一：浮亏加仓</h3>
-            <p class="rule-desc">当持仓处于亏损状态时，建议追加买入</p>
+            <h3 class="rule-title">规则一：预估亏损加仓</h3>
+            <p class="rule-desc">当预估收益（扣除今日估值后）为负时，建议逢低补仓</p>
             <div class="form-group rule-item">
               <label for="lossBuyAmount">建议买入金额 (元)</label>
               <input type="number" id="lossBuyAmount" value="40" min="0" step="10">
@@ -130,23 +130,23 @@
 
           <!-- 规则2: 小盈利持有 -->
           <div class="strategy-rule">
-            <h3 class="rule-title">规则二：小盈利持有</h3>
-            <p class="rule-desc">当盈利低于阈值时，建议继续持有，不进行操作</p>
+            <h3 class="rule-title">规则二：小幅盈利持有</h3>
+            <p class="rule-desc">当预估收益低于止盈阈值时，建议继续持有观望</p>
             <div class="form-group rule-item">
-              <label for="holdThreshold">盈利阈值 (%)</label>
+              <label for="holdThreshold">持有阈值 (%)</label>
               <input type="number" id="holdThreshold" value="10" min="0" max="100" step="0.5">
-              <small class="input-hint">盈利低于此比例时建议不买</small>
+              <small class="input-hint">预估收益低于此比例时建议持有</small>
             </div>
           </div>
 
-          <!-- 规则3: 高盈利重新建仓 -->
+          <!-- 规则3: 高盈利平仓止盈 -->
           <div class="strategy-rule">
-            <h3 class="rule-title">规则三：高盈利重新建仓</h3>
-            <p class="rule-desc">当盈利达到或超过阈值时，建议止盈并重新建仓以重置成本</p>
+            <h3 class="rule-title">规则三：高盈利平仓止盈</h3>
+            <p class="rule-desc">当预估收益（扣除今日估值后）达到或超过阈值时，建议止盈平仓</p>
             <div class="form-group rule-item">
-              <label for="rebuildThreshold">建仓阈值 (%)</label>
+              <label for="rebuildThreshold">止盈阈值 (%)</label>
               <input type="number" id="rebuildThreshold" value="10" min="0" max="100" step="0.5">
-              <small class="input-hint">盈利达到此比例时建议重新建仓</small>
+              <small class="input-hint">预估收益达到此比例时建议平仓止盈</small>
             </div>
           </div>
 

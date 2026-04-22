@@ -15,7 +15,7 @@
   --bg-advice: #fafafa;
   --bg-advice-buy: #fafafa;
   --bg-advice-hold: #fffbf0;
-  --bg-advice-rebuild: #fef6f4;
+  --bg-advice-sell: #fef6f4;
 
   --text-primary: #1a1a1a;
   --text-secondary: #999;
@@ -55,7 +55,7 @@
 
   --advice-buy-text: #444;
   --advice-hold-text: #996600;
-  --advice-rebuild-text: #c94a30;
+  --advice-sell-text: #c94a30;
 
   --spinner-track: #eee;
   --spinner-active: #999;
@@ -75,7 +75,7 @@
     --bg-advice: #2a2a2a;
     --bg-advice-buy: #252525;
     --bg-advice-hold: #332d1a;
-    --bg-advice-rebuild: #3a2220;
+    --bg-advice-sell: #3a2220;
 
     --text-primary: #e8e8e8;
     --text-secondary: #888;
@@ -132,7 +132,7 @@
   --bg-advice: #2a2a2a;
   --bg-advice-buy: #252525;
   --bg-advice-hold: #332d1a;
-  --bg-advice-rebuild: #3a2220;
+  --bg-advice-sell: #3a2220;
 
   --text-primary: #e8e8e8;
   --text-secondary: #888;
@@ -758,14 +758,14 @@ body {
   color: var(--advice-hold-text);
 }
 
-.strategy-advice.advice-rebuild {
-  background: var(--bg-advice-rebuild);
+.strategy-advice.advice-sell {
+  background: var(--bg-advice-sell);
   border-color: #f5e0da;
 }
 
-.strategy-advice.advice-rebuild .advice-text,
-.strategy-advice.advice-rebuild .advice-icon {
-  color: var(--advice-rebuild-text);
+.strategy-advice.advice-sell .advice-text,
+.strategy-advice.advice-sell .advice-icon {
+  color: var(--advice-sell-text);
 }
 
 .advice-icon {
