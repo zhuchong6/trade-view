@@ -1,6 +1,7 @@
 // 天天基金 API 基础地址
 const FUND_ESTIMATE_API = 'https://fundgz.1234567.com.cn/js/';
 const FUND_INFO_API = 'https://fund.eastmoney.com/pingzhongdata/';
+const FUND_NAV_API = 'https://fundf10.eastmoney.com/F10DataApi.aspx';
 
 // 插件安装时初始化
 chrome.runtime.onInstalled.addListener(() => {
@@ -37,30 +38,97 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // 获取基金数据
 async function fetchFundData(code) {
   try {
-    // 并行请求估值数据和详细信息
-    const [estimateData, infoData] = await Promise.allSettled([
+    // 并行请求：估值数据 + 详细信息 + 最新净值（主数据源）
+    const [estimateData, infoData, navData] = await Promise.allSettled([
       fetchEstimateData(code),
       fetchFundInfo(code),
+      fetchLatestNav(code),
     ]);
 
     const est = estimateData.status === 'fulfilled' ? estimateData.value : null;
     const info = infoData.status === 'fulfilled' ? infoData.value : null;
+    const nav = navData.status === 'fulfilled' ? navData.value : null;
 
     // 判断是否有估值数据（某些基金如FOF、新发基金不支持实时估值）
     const hasEstimateData = est && est.dwjz;
 
+    // 最新净值优先用 lsjz 接口（QDII等基金更新更及时），兜底用旧接口
+    const currentNav = nav?.currentNav ?? est?.dwjz ?? info?.currentNav ?? null;
+    const totalNav = nav?.totalNav ?? info?.totalNav ?? est?.dwjz ?? null;
+    const navDate = nav?.navDate ?? est?.jzrq ?? info?.navDate ?? null;
+
+    // 估值处理：QDII等基金 fundgz 的 dwjz 可能严重滞后于 lsjz 的净值
+    // 当 lsjz 净值日期比 fundgz 的 jzrq 更新时，fundgz 的 gsz 基于旧净值，
+    // 需要用新净值重新计算估值（保留涨跌幅百分比，换算新基数）
+    let estimatedNav = null;
+    let estimatedChange = null;
+    if (hasEstimateData && est.gszzl != null) {
+      estimatedChange = parseFloat(est.gszzl);
+      const navBase = parseFloat(currentNav);
+      if (nav?.navDate && est.jzrq && nav.navDate > est.jzrq && !isNaN(navBase)) {
+        // lsjz 净值更新，用新净值重算估值
+        estimatedNav = (navBase * (1 + estimatedChange / 100)).toFixed(4);
+      } else {
+        estimatedNav = est.gsz;
+      }
+    }
+
     return {
       code,
-      name: est?.name || info?.name || code,
-      currentNav: est?.dwjz ?? info?.currentNav ?? null,
-      totalNav: info?.totalNav ?? est?.dwjz ?? null,
-      estimatedNav: hasEstimateData ? est?.gsz : null,
-      estimatedChange: hasEstimateData && est?.gszzl != null ? parseFloat(est.gszzl) : null,
-      navDate: est?.jzrq ?? info?.navDate ?? null,
+      name: est?.name || info?.name || nav?.name || code,
+      currentNav,
+      totalNav,
+      estimatedNav,
+      estimatedChange,
+      navDate,
       hasRealTimeEstimate: hasEstimateData,
     };
   } catch (err) {
     console.error(`基金 ${code} 数据获取失败:`, err);
+    return null;
+  }
+}
+
+// 获取最新净值（F10DataApi接口，对QDII/FOF等基金净值更新更及时）
+async function fetchLatestNav(code) {
+  try {
+    const url = `${FUND_NAV_API}?type=lsjz&code=${code}&page=1&per=1&_=${Date.now()}`;
+    const response = await fetch(url, {
+      headers: {
+        'Referer': 'https://fundf10.eastmoney.com/',
+      },
+    });
+    if (!response.ok) return null;
+
+    const text = await response.text();
+
+    // 返回格式: var apidata={content:"<table>...</table>",records:N,...};
+    // 直接用正则提取 content 字段值
+    const contentMatch = text.match(/content\s*:\s*"([\s\S]*?)"\s*,\s*records/);
+    if (!contentMatch) return null;
+
+    let html = contentMatch[1];
+    // 处理JSON转义
+    html = html.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+
+    // 解析HTML表格中的<td>内容
+    const cellRegex = /<td[^>]*>([\s\S]*?)<\/td>/g;
+    const cells = [];
+    let m;
+    while ((m = cellRegex.exec(html)) !== null) {
+      cells.push(m[1].trim());
+    }
+    // cells: [净值日期, 单位净值, 累计净值, 日增长率, 申购状态, 赎回状态, 分红送配]
+    if (cells.length < 3) return null;
+
+    return {
+      name: null,
+      currentNav: cells[1] || null,     // 单位净值
+      totalNav: cells[2] || null,       // 累计净值
+      navDate: cells[0] || null,        // 净值日期
+      dailyChange: cells[3] || null,    // 日增长率
+    };
+  } catch (err) {
     return null;
   }
 }
