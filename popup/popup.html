@@ -1,50 +1,30 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trade View</title>
-  <link rel="stylesheet" href="popup.css">
-</head>
-<body>
-  <!-- 市场指数栏 -->
-  <div id="marketIndexBar" class="market-index-bar">
-    <div class="index-item" id="shIndex">
-      <span class="index-name">上证指数</span>
-      <span class="index-value">--</span>
-      <span class="index-change">--</span>
-    </div>
-    <div class="index-divider"></div>
-    <div class="index-item" id="nasdaqIndex">
-      <span class="index-name">纳斯达克</span>
-      <span class="index-value">--</span>
-      <span class="index-change">--</span>
-    </div>
-  </div>
-  <div class="container">
-    <header class="header">
-      <img src="../icons/icon48.png" alt="Logo" class="logo">
-      <h1 class="title">基金看板</h1>
+  <head>
+    <meta charset="utf-8" />
+    <title>AB 策略监控</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="bar">
+      <div class="brand"><span class="dot"></span>AB 策略监控</div>
+      <div class="right">
+        <span id="stamp">--</span>
+        <button id="refresh" title="刷新">↻</button>
+      </div>
     </header>
-    <main class="main">
-      <div class="input-group">
-        <input type="text" id="fundInput" class="input" placeholder="输入基金代码，如 000001" maxlength="6">
-        <button id="addBtn" class="btn btn-add">添加</button>
-      </div>
-      <div id="fundList" class="fund-list">
-        <!-- 基金卡片动态生成 -->
-      </div>
-      <div id="emptyTip" class="empty-tip">暂无基金，请添加</div>
-      <div id="loading" class="loading" style="display:none;">
-        <div class="spinner"></div>
-        <span>加载中...</span>
-      </div>
+
+    <main id="app">
+      <p class="skeleton">加载中…</p>
     </main>
-    <footer class="footer">
-      <a href="#" id="openSettings" class="settings-link">设置</a>
-      <span class="version">v1.0.0</span>
+
+    <footer>
+      <button id="open-dash" class="ghost">监控台</button>
+      <button id="open-log" class="primary">记一笔</button>
     </footer>
-  </div>
-  <script src="popup.js"></script>
-</body>
+
+    <div id="error" hidden></div>
+
+    <script type="module" src="popup.js"></script>
+  </body>
 </html>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AB 策略监控</title>
+    <link rel="stylesheet" href="dashboard.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="brand">
+        <span class="mark"></span>
+        <div>
+          <h1>AB 策略监控</h1>
+          <p>实时价 + 策略阈值，阈值已换算到现价口径</p>
+        </div>
+      </div>
+      <div class="actions">
+        <span id="stamp">--</span>
+        <button id="btn-refresh" class="btn">刷新</button>
+        <button id="btn-settings" class="btn ghost">参数</button>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section id="panel-a" class="panel"><p class="skeleton">加载中…</p></section>
+      <section id="panel-b" class="panel"><p class="skeleton">加载中…</p></section>
+
+      <section class="panel">
+        <header class="panel-head">
+          <div class="title">交易记录</div>
+          <div class="head-actions">
+            <button id="btn-add-trade" class="btn">+ 记一笔</button>
+            <button id="btn-clear-log" class="btn ghost">清空</button>
+          </div>
+        </header>
+        <div class="table-wrap">
+          <table class="log">
+            <thead>
+              <tr>
+                <th>时间</th>
+                <th>动作</th>
+                <th class="num">成交价</th>
+                <th class="num">金额</th>
+                <th>触发依据</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="log-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <p class="note">
+        页面上所有价格都是行情里的实时价。均线与买卖线来自后复权序列，再按复权因子换算成现价，
+        所以数字可以直接和券商对照。信号只认收盘。
+      </p>
+    </main>
+
+    <dialog id="dlg-settings">
+      <form id="settings-form">
+        <h2>参数</h2>
+        <div class="field-grid">
+          <label>A 仓计划资金<input name="planA" type="number" step="1000" min="0" /></label>
+          <label>B 仓计划资金<input name="planB" type="number" step="1000" min="0" /></label>
+          <label>买入系数（MA60 ×）<input name="buyFactor" type="number" step="0.01" min="0.5" max="1" /></label>
+          <label>卖出系数（MA60 ×）<input name="sellFactor" type="number" step="0.01" min="1" max="2" /></label>
+          <label>止盈线（浮盈 %）<input name="takeProfit" type="number" step="1" min="1" max="100" /></label>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn ghost" id="btn-settings-cancel">取消</button>
+          <button type="submit" class="btn primary">保存</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="dlg-trade">
+      <form id="trade-form">
+        <h2>记一笔</h2>
+        <label class="block">
+          动作
+          <select name="side">
+            <option value="A-BUY">A 仓买入 512890</option>
+            <option value="A-SELL">A 仓卖出 512890</option>
+            <option value="B-BUY">B 仓买入 515450</option>
+          </select>
+        </label>
+        <div class="field-grid">
+          <label>成交价（实时价）<input name="price" type="number" step="0.001" min="0" required /></label>
+          <label>金额<input name="amount" type="number" step="100" min="0" /></label>
+        </div>
+        <label class="block">备注<input name="note" type="text" maxlength="80" placeholder="可选" /></label>
+        <p class="form-hint" id="trade-hint"></p>
+        <div class="form-actions">
+          <button type="button" class="btn ghost" id="btn-trade-cancel">取消</button>
+          <button type="submit" class="btn primary">保存</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="dashboard.js"></script>
+  </body>
+</html>
